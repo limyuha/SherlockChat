@@ -1,57 +1,63 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { API_BASE } from '@/lib/api'
 
 export default function ChatPanel() {
-  const [input, setInput] = useState('')
-  const [messages, setMessages] = useState([
-    { role: 'system', text: '안녕하세요, 사건 리포터 AI입니다. 사건에 대해 궁금한 점이 있나요?' }
-  ])
+  const [storyId, setStoryId] = useState('start')
+  const [messages, setMessages] = useState<any[]>([])
+  const [choices, setChoices] = useState<string[]>([])
 
-  const sendMessage = async () => {
-    if (!input.trim()) return
+  useEffect(() => {
+    loadStory('start')
+  }, [])
 
-    const newMessages = [...messages, { role: 'user', text: input }]
-    setMessages(newMessages)
-    setInput('')
-
-    const res = await fetch(`${API_BASE}/api/chat`, {
+  const loadStory = async (id: string, message?: string) => {
+    const res = await fetch(`${API_BASE}/api/story`, {
       method: 'POST',
-      body: JSON.stringify({ message: input }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ story_id: id, message })
     })
     const data = await res.json()
-    setMessages([...newMessages, { role: 'assistant', text: data.reply }])
+
+    setMessages(prev => [...prev, { role: 'system', text: data.reply }])
+    setChoices(data.choices || [])
+    setStoryId(id)
+  }
+
+  const handleChoice = (choice: string) => {
+    setMessages(prev => [...prev, { role: 'user', text: choice }])
+    loadStory(storyId, choice)
   }
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto space-y-3">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((m, i) => (
           <div
             key={i}
             className={`p-2 rounded-xl ${
-              m.role === 'user' ? 'bg-blue-100 text-right' : 'bg-gray-200 text-left'
+              m.role === 'user' ? 'bg-red-200 text-right' : 'bg-gray-100 text-left'
             }`}
           >
             {m.text}
           </div>
         ))}
       </div>
-      <div className="flex gap-2 mt-3">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder="질문을 입력하세요..."
-          className="flex-1 border rounded-lg px-3 py-2"
-        />
-        <button
-          onClick={sendMessage}
-          className="bg-blue-600 text-white px-4 rounded-lg"
-        >
-          전송
-        </button>
+
+      <div className="mt-4 space-y-2">
+        {choices.length > 0 ? (
+          choices.map((c, i) => (
+            <button
+              key={i}
+              onClick={() => handleChoice(c)}
+              className="w-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-lg py-2 transition-all"
+            >
+              {c}
+            </button>
+          ))
+        ) : (
+          <p className="text-sm text-gray-400 text-center">선택지가 없습니다.</p>
+        )}
       </div>
     </div>
   )
