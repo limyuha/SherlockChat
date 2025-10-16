@@ -25,17 +25,17 @@ export default function Home() {
 
       {/* 카드 크기 확대 + 간격 증가 */}
       <div className="grid grid-cols-3 gap-14">
-        <div onClick={() => handleSelect('real')} className="mode-card">
+        <div onClick={() => handleSelect('상')} className="mode-card">
           <div className="mode-card-title">👹 상</div>
           <div className="mode-card-desc">스릴러 소설</div>
         </div>
 
-        <div onClick={() => handleSelect('murder')} className="mode-card">
+        <div onClick={() => handleSelect('중')} className="mode-card">
           <div className="mode-card-title">🔪 중</div>
           <div className="mode-card-desc">살인사건 추리</div>
         </div>
 
-        <div onClick={() => handleSelect('ghost')} className="mode-card">
+        <div onClick={() => handleSelect('하')} className="mode-card">
           <div className="mode-card-title">👻 하</div>
           <div className="mode-card-desc">누가 귀신일까?</div>
         </div>

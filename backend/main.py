@@ -11,132 +11,195 @@ from openai import OpenAI
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+app = FastAPI()
 # ------------------------------
 # ② FastAPI 기본 설정
 # ------------------------------
-app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # 임시로 모든 origin 허용 (테스트용)
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 BASE_DIR = Path(__file__).resolve().parent
-CASE_PATH = BASE_DIR / "cases" / "case001.json"
 
 # ------------------------------
-# 📢 기사 데이터 API
+# 📢 사건 데이터 API
 # ------------------------------
 @app.get("/api/report")
 def get_report(mode: str):
-    print(f"[DEBUG] /api/report called with mode={mode}")  # ✅ 로그 추가
-    
-    with open(CASE_PATH, "r", encoding="utf-8") as f:
+    print(f"[DEBUG] /api/report called with mode={mode}")
+
+    # 사건별 파일 매핑
+    case_file_map = {
+        "상": "case_high.json",
+        "중": "case_mid.json",
+        "하": "case_low.json"
+    }
+
+    # 기본 파일 설정 (fallback)
+    filename = case_file_map.get(mode, "case_low.json")
+    case_path = BASE_DIR / "cases" / filename
+
+    # JSON 로드
+    with open(case_path, "r", encoding="utf-8") as f:
         case = json.load(f)
-        print("[DEBUG] case loaded successfully")  # ✅ 로그 추가
 
-    if mode in ["상", "중", "하", "ghost"]:
-        # 귀신 / 스릴러 모드
-        return {
-            "title": case["title"],
-            "summary": case["summary"],
-            "difficulty": case["difficulty"],
-            "image": "https://images.unsplash.com/photo-1607863680165-5f4fa3f3923d",
-            "setting": case["setting"]
-        }
+    return {
+        "title": case["title"],
+        "image": case.get("image", ""),
+        "difficulty": case.get("difficulty", "중"),
+        "case_overview": case.get("case_overview", {}),
+        "characters": case.get("characters", []),
+        "evidence": case.get("evidence", []),
+        "solution": case.get("solution", {})
+    }
+    
+# =========================
+# 🔍 인물 자동 탐색 (정확도 개선 버전)
+# =========================
+def find_character_info(message: str, case_data: dict):
+    """
+    사용자의 입력에서 등장인물을 탐지하여 관련 정보를 반환.
+    - '사용자', '당신', '기자' 등 자기지칭 단어는 무시
+    - case_high / mid / low 모두 호환
+    """
+    message_lower = message.lower()
+    characters = case_data.get("characters", [])
 
-    elif mode == "real":
-        # 현실 모드 뉴스
-        return {
-            "title": "신촌 살인사건, 새 단서 발견",
-            "date": "2025-10-13",
-            "location": "서울 신촌",
-            "summary": "오늘 새벽 신촌 한 아파트에서...",
-            "image": "https://picsum.photos/800/400"
-        }
+    # 🚫 무시해야 하는 단어
+    ignore_keywords = ["사용자", "너", "당신", "기자", "탐정"]
 
-    else:
-        # 기본 뉴스
-        return {
-            "title": "도심 속 살인사건, 목격자는 누구?",
-            "summary": "용의자는 피해자의 직장 동료로 추정된다."
-        }
+    if any(word in message_lower for word in ignore_keywords):
+        return None
+
+    for char in characters:
+        name = char.get("name", "")
+        role = char.get("role", "")
+        desc = char.get("description", "")
+
+        # ✅ 이름 또는 역할이 입력 문장에 포함되어 있으면 매칭
+        if name and name.lower() in message_lower:
+            return char
+        if role and role.lower() in message_lower:
+            return char
+        if name.replace("씨", "").lower() in message_lower:
+            return char
+
+    return None
+
+
+# =========================
+# 🧩 증거 자동 탐색
+# =========================
+def find_evidence_info(message: str, case_data: dict):
+    message_lower = message.lower()
+    evidences = case_data.get("evidence", [])
+
+    for ev in evidences:
+        ev_type = ev.get("type", "").lower()
+        ev_desc = ev.get("description", "").lower()
+
+        # ✅ 타입명(예: '시계', '녹음 장치')이나 설명 일부가 문장에 포함되면 탐지
+        if ev_type in message_lower or any(word in message_lower for word in ev_desc.split()):
+            return ev
+
+    return None
 
 # ------------------------------
-# 💬 대화 API
+# 💬 대화 API (탐정 모드)
 # ------------------------------
 @app.post("/api/chat")
 async def chat(req: Request):
     data = await req.json()
-    message = data.get("message", "").lower()
-    history = data.get("history", [])  # ✅ 프론트에서 보낸 이전 대화
+    message = data.get("message", "").strip()
+    mode = data.get("mode", "중")
+    history = data.get("history", [])
 
-    with open(CASE_PATH, "r", encoding="utf-8") as f:
+    # 사건 파일 매핑
+    case_file_map = {
+        "상": "case_high.json",
+        "중": "case_mid.json",
+        "하": "case_low.json"
+    }
+    filename = case_file_map.get(mode, "case_low.json")
+    case_path = BASE_DIR / "cases" / filename
+
+    # 사건 데이터 로드
+    with open(case_path, "r", encoding="utf-8") as f:
         case = json.load(f)
+        
+    # 🧠 사용자의 질문에서 인물 탐색
+    found_char = find_character_info(message, case)
+    if found_char:
+        desc = (
+            found_char.get("alibi", "")
+            or found_char.get("background", "")
+            or found_char.get("relationship", "")
+            or found_char.get("description", "")
+        )
+        role = found_char.get("occupation", "") or found_char.get("role", "")
+        reply = f"{found_char['name']} ({role}) — {desc if desc else '관련 정보가 없습니다.'}"
+        return {"reply": reply}
 
-    # 1️⃣ 키워드 기반 즉시 반응 (귀신 모드)
-    if any(keyword in message for keyword in ["귀신", "병실", "밥", "거울", "사람", "퇴원", "cctv"]):
-        responses = case["responses"]
-        for key, resp in responses.items():
-            if key.lower() in message:
-                return {"reply": resp}
-        clue = random.choice(case["clues"])
-        return {"reply": f"단서 발견 🧩: {clue}"}
+    # 🔍 증거 탐색
+    found_evi = find_evidence_info(message, case)
+    if found_evi:
+        return {
+            "reply": f"🔍 {found_evi['type']} — {found_evi['description']}\n"
+                     f"📎 단서 요약: {found_evi.get('details', found_evi.get('implications', ''))}"
+        }
 
-    # 2️⃣ AI 대화 (히스토리 포함)
+    # 사건 개요를 요약 문자열로 생성
+    overview_text = (
+        f"장소: {case['case_overview'].get('setting', '')}, "
+        f"시간: {case['case_overview'].get('time', '')}, "
+        f"피해자: {case['case_overview'].get('victim', '')}, "
+        f"사망 원인: {case['case_overview'].get('death_cause', '')}."
+    )
+
+    # 시스템 메시지 구성 (탐정 역할)
+    system_prompt = case.get("chatbot_instructions", {}).get(
+        "role",
+        "당신은 이 미스터리 사건을 조사하는 탐정입니다."
+    )
+
+    guidelines = "\n".join(case.get("chatbot_instructions", {}).get("guidelines", []))
+
+    # GPT 대화 히스토리 구성
     messages = [
-        {"role": "system", "content": "너는 공포 추리 기자 AI다. 사건의 진실을 바로 말하지 말고, 점점 단서를 통해 드러내라."},
-        {"role": "user", "content": f"사건 요약: {case['summary']}"}
+        {"role": "system", "content": f"{system_prompt}\n{guidelines}"},
+        {"role": "user", "content": f"사건 개요: {overview_text}"}
     ]
 
-    # ✅ 지금까지의 대화 히스토리 반영
+    # 이전 대화 반영
     for h in history:
         messages.append({"role": h["role"], "content": h["text"]})
 
-    # ✅ 새 질문 추가
+    # 사용자의 새 입력 추가
     messages.append({"role": "user", "content": message})
 
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=messages
+            messages=messages,
+            temperature=0.7
         )
         answer = response.choices[0].message.content
         return {"reply": answer}
+
     except Exception as e:
+        print("[ERROR]", e)
         return {"reply": f"AI 처리 중 오류가 발생했습니다: {e}"}
-    
+
 # ------------------------------
-# 💬 스토리 분기형 API
+# 🧩 스토리 분기형 (미사용 시 기본 응답)
 # ------------------------------
 @app.post("/api/story")
 async def story(req: Request):
-    data = await req.json()
-    user_message = data.get("message", "")
-    story_id = data.get("story_id", "start")  # 기본 시작 지점
-    with open(CASE_PATH, "r", encoding="utf-8") as f:
-        case = json.load(f)
-
-    # 스토리 노드 탐색
-    story_nodes = case.get("story", {})
-    node = story_nodes.get(story_id)
-
-    if not node:
-        return {"reply": "이야기를 이어갈 수 없습니다.", "choices": []}
-
-    # 사용자가 선택을 했을 경우
-    if user_message and "next" in node:
-        next_id = node["next"].get(user_message)
-        if next_id:
-            next_node = story_nodes.get(next_id)
-            return {
-                "reply": next_node["text"],
-                "choices": next_node.get("choices", [])
-            }
-
-    # 기본 출력
     return {
-        "reply": node["text"],
-        "choices": node.get("choices", [])
+        "reply": "이 사건은 스토리 분기 모드를 지원하지 않습니다.",
+        "choices": []
     }

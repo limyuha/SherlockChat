@@ -1,5 +1,6 @@
 @echo off
-title SherlockChat - Full Auto Starter
+chcp 65001 > nul
+title SherlockChat - Full Auto Starter (UTF-8)
 echo ======================================================
 echo 🧠 SherlockChat 통합 개발 환경 자동 실행 중...
 echo ======================================================
@@ -13,11 +14,11 @@ call venv\Scripts\activate
 
 :: FastAPI 백엔드 실행 (새 창)
 echo [2/5] 🚀 FastAPI 서버 실행...
-start "FastAPI Server" cmd /k "cd backend && uvicorn main:app --reload"
+start "FastAPI Server" cmd /k "chcp 65001 > nul && cd backend && uvicorn main:app --reload"
 
 :: 프론트엔드 실행 (새 창)
 echo [3/5] 💻 Next.js 프론트엔드 실행...
-start "Frontend Server" cmd /k "cd frontend && npm run dev"
+start "Frontend Server" cmd /k "chcp 65001 > nul && cd frontend && npm run dev"
 
 :: 포트 확인
 echo [4/5] 🔍 포트 상태 확인...

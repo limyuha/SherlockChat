@@ -24,6 +24,7 @@ html, body {
     0 0 10px #ff3333,
     0 0 20px #ff5555;
   transition: background 0.5s ease, color 0.3s ease;
+  scroll-behavior: smooth;
 }
 
 /* 🩸 내부 컨테이너 — 흰색 방지용 */
@@ -325,4 +326,31 @@ p {
 }
 .mode-card {
   animation: pulseGlow 3.5s infinite ease-in-out;
+}
+
+/* 🩸 어두운 공포 테마 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a0000; /* 어두운 배경 */
+  border-left: 1px solid #330000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff0000, #800000);
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff3333, #660000);
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+}
+
+/* 파이어폭스 대응 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ff0000 #1a0000;
 }
