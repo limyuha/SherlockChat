@@ -51,9 +51,11 @@ ENV/
 *.pem
 *.key
 *.sqlite3
+
+# ❗ data 폴더 내 json만 제외하고, 나머지는 포함
 data/
-*.json
-*.csv
+data/*.json
+!backend/cases/*.json
 
 # ----------------------------
 # 🧰 Logs / Debug
