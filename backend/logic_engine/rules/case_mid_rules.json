@@ -1,0 +1,112 @@
+[
+  {
+    "pattern": "피해자",
+    "verdict": "yes",
+    "evidence": "'피해자'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "흔적",
+    "verdict": "yes",
+    "evidence": "'흔적'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "C씨",
+    "verdict": "yes",
+    "evidence": "'C씨'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "아래",
+    "verdict": "yes",
+    "evidence": "'아래'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "나무",
+    "verdict": "yes",
+    "evidence": "'나무'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "L씨",
+    "verdict": "yes",
+    "evidence": "'L씨'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "번개탄",
+    "verdict": "yes",
+    "evidence": "'번개탄'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "조각",
+    "verdict": "yes",
+    "evidence": "'조각'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "긁힌",
+    "verdict": "yes",
+    "evidence": "'긁힌'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "발견됨",
+    "verdict": "yes",
+    "evidence": "'발견됨'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "하숙집",
+    "verdict": "yes",
+    "evidence": "'하숙집'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "2층",
+    "verdict": "yes",
+    "evidence": "'2층'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "번째",
+    "verdict": "yes",
+    "evidence": "'번째'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "일산화탄소",
+    "verdict": "yes",
+    "evidence": "'일산화탄소'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "사용",
+    "verdict": "yes",
+    "evidence": "'사용'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "문자",
+    "verdict": "yes",
+    "evidence": "'문자'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "이용해",
+    "verdict": "yes",
+    "evidence": "'이용해'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "열리",
+    "verdict": "yes",
+    "evidence": "'열리'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "구조",
+    "verdict": "yes",
+    "evidence": "'구조'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "고정",
+    "verdict": "yes",
+    "evidence": "'고정'는 사건의 핵심 단서입니다."
+  },
+  {
+    "pattern": "살해|범인|흉기",
+    "verdict": "no",
+    "evidence": "이 사건은 단순 살인사건이 아닙니다."
+  },
+  {
+    "pattern": "기억|실험|루프",
+    "verdict": "yes",
+    "evidence": "이 사건은 실험과 기억 조작과 관련이 있습니다."
+  }
+]
