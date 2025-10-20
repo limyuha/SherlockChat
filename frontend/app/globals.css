@@ -4,13 +4,14 @@
 /* 🔥 공포 테마 - 붉은 빛이 퍼지는 뉴스룸 스타일 */
 /* ============================ */
 
-/* 1️⃣ 전역 변수 정의 */
+/* 전역 변수 정의 */
 :root {
-  --background: #000000;
-  --foreground: #ff2b2b;
+  --background: #000;
+  --foreground: #f2f2f2; /* 기본 흰색 텍스트 */
+  --accent: #ff2b2b; /* 포인트 붉은색 */
 }
- 
-/* 🩸 HTML / BODY  */
+
+/* HTML / BODY  */
 html, body {
   background-color: var(--background) !important;
   color: var(--foreground) !important;
@@ -20,25 +21,56 @@ html, body {
   padding: 0;
   letter-spacing: 0.5px;
   text-shadow:
-    0 0 5px #ff0000,
-    0 0 10px #ff3333,
-    0 0 20px #ff5555;
+    0 0 3px #ff0000,
+    0 0 6px #ff3333;
   transition: background 0.5s ease, color 0.3s ease;
   scroll-behavior: smooth;
 }
 
-/* 🩸 내부 컨테이너 — 흰색 방지용 */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,0,0,0.05), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1, h2, h3, strong, .highlight {
+  color: var(--accent);
+  text-shadow:
+    0 0 8px #ff0000,
+    0 0 20px #ff3333;
+}
+
+p, span, li {
+  color: #e8e8e8;
+  text-shadow:
+    0 0 2px #ff0000,
+    0 0 5px #ff2222;
+}
+
+/* 내부 컨테이너 — 흰색 방지용 */
 #__next, main, section {
   background-color: transparent !important;
   color: var(--foreground) !important;
 }
 
-/* 🩸 혹시 흰 div가 있으면 강제로 투명화 */
-div:not(.breaking-news-bar):not(.breaking-news-text) {
+/* 혹시 흰 div가 있으면 강제로 투명화 */
+div:not(.breaking-news-bar):not(.breaking-news-text):not(.texture-panel) {
   background-color: transparent !important;
 }
 
-/* 4️⃣ 링크 (뉴스 제목 등) */
+/* 로고 천천히 나타남 */
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in {
+  animation: fade-in 1.2s ease-out forwards;
+}
+
+/* 링크 (뉴스 제목 등) */
 a {
   color: #ff4040;
   text-decoration: none;
@@ -53,7 +85,7 @@ a:hover {
     0 0 30px #ff0000;
 }
 
-/* 5️⃣ 버튼 */
+/* 버튼 */
 button {
   background-color: transparent;
   color: #ff2b2b;
@@ -72,7 +104,7 @@ button {
 }
 button:hover {
   background-color: #ff2b2b;
-  color: #000;
+  color: #fff;
   text-shadow: none;
   box-shadow:
     0 0 25px #ff0000,
@@ -80,15 +112,19 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* 6️⃣ 입력창 (질문 입력칸) */
+/* 입력창 (질문 입력칸) */
 input, textarea {
-  background-color: #111;
-  border: 1px solid #ff2b2b;
-  color: #ffcccc;
+  background-color: #0a0a0a;
+  border: 1px solid rgba(255, 43, 43, 0.8);
+  box-shadow: 0 0 6px rgba(255, 0, 0, 0.3);
+  color: #f0f0f0;
   padding: 8px 10px;
   border-radius: 6px;
   outline: none;
   transition: box-shadow 0.3s ease;
+}
+input::placeholder, textarea::placeholder {
+  color: #888;
 }
 input:focus, textarea:focus {
   box-shadow:
@@ -96,7 +132,7 @@ input:focus, textarea:focus {
     0 0 20px #ff0000;
 }
 
-/* 7️⃣ 제목 강조 (붉은 네온 + 깜빡임 효과) */
+/* 제목 강조 (붉은 네온 + 깜빡임 효과) */
 h1, h2, h3 {
   color: #ff2b2b;
   text-shadow:
@@ -125,17 +161,8 @@ h1, h2 {
   animation: flicker 3s infinite;
 }
 
-/* 8️⃣ 기사 본문 (약간 연한 톤) */
-p {
-  color: #ffaaaa;
-  line-height: 1.6;
-  text-shadow:
-    0 0 3px #ff0000,
-    0 0 10px #ff2222;
-}
-
 /* ============================ */
-/* 🩸 뉴스 방송 헤드라인 효과 */
+/* 뉴스 방송 헤드라인 효과 */
 /* ============================ */
 
 /* 상단 고정 헤드라인 바 */
@@ -196,7 +223,7 @@ p {
 
 /* -------------------------------------------------- */
 
-/* 🩸 손자국 등장 + 흔들림 애니메이션 */
+/* 손자국 등장 + 흔들림 애니메이션 */
 @keyframes appearBlood {
   0% {
     opacity: 0;
@@ -240,7 +267,7 @@ p {
 
 /* -------------------------------------------------- */
 /* ============================ */
-/* 💀 롤체 증강 카드 스타일 */
+/* 롤체 증강 카드 스타일 */
 /* ============================ */
 
 .mode-card {
@@ -328,7 +355,7 @@ p {
   animation: pulseGlow 3.5s infinite ease-in-out;
 }
 
-/* 🩸 어두운 공포 테마 스크롤바 스타일 */
+/* 어두운 공포 테마 스크롤바 스타일 */
 ::-webkit-scrollbar {
   width: 10px;
 }

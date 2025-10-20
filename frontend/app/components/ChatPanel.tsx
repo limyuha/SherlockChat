@@ -3,7 +3,9 @@ import { useState, useRef, useEffect } from 'react'
 import { API_BASE } from '@/lib/api'
 import { useSearchParams } from 'next/navigation' // mode 읽기용
 
-export default function ChatPanel() {
+// 단서를 상위(ReporterPage나 page.tsx)로 올리기 위해
+// prop으로 함수를 받아서 호출(없어도 오류 안나도록 ? 추가)
+export default function ChatPanel({ onNewClue }: { onNewClue?: (clue: string) => void }) {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState([
     { role: 'system', text: '안녕하세요, 사건 리포터 AI입니다. 사건에 대해 궁금한 점이 있나요?' }
@@ -45,6 +47,12 @@ export default function ChatPanel() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       setMessages([...newMessages, { role: 'assistant', text: data.reply }])
+
+    // 단서(clue)가 응답에 포함되어 있으면 상위로 전달(왼쪽 패널로 전달)
+    if (data.clue && onNewClue) {
+      onNewClue(data.clue)
+    }
+
     } catch (err) {
       console.error(err)
       setMessages([
@@ -85,6 +93,7 @@ export default function ChatPanel() {
       {/* 입력창 */}
       <div className="flex gap-2 mt-3 border-t pt-3">
         <input
+          data-allow-input="true" // ReporterPage에서 이 속성 가진 요소는 입력 허용
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
