@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import ChatPanel from '@/app/components/ChatPanel'

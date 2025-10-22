@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useRef, useEffect } from 'react'
 import { API_BASE } from '@/lib/api'
 import { useSearchParams } from 'next/navigation' // mode 읽기용

@@ -1,3 +1,4 @@
+"use client";
 export default function CasePanel({ article, clues, unlockedEvidence, activeTab, mode, story1}: any) {
   return (
     <>
