@@ -381,3 +381,29 @@ h1, h2 {
   scrollbar-width: thin;
   scrollbar-color: #ff0000 #1a0000;
 }
+
+/* ====================================== */
+/* 피 번짐 효과 */
+/* ====================================== */
+.blood-burst {
+  background-image: url('/textures/blood/blood8.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 140%;
+  opacity: 0;
+  transform: scale(1.05);
+  filter: blur(2px);
+  transition: opacity 0.4s ease-out, transform 0.5s ease-out;
+}
+
+/* hover 시 피 효과 활성화 */
+div:hover > .blood-burst {
+  opacity: 0.9;
+  transform: scale(1.25);
+  filter: blur(0.5px);
+}
+
+
+
+
+

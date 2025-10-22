@@ -1,120 +1,125 @@
 {
-  "title": "인간은 단 한 명",
-  "image": "",
+  "title": "스무고개 대학생 일상 미스터리",
+  "image": "/textures/blood/blood3.png",
   "difficulty": "하",
+
   "case_overview": {
-    "setting": "병원 301호 병실",
-    "time": "심야, 사고 후 깨어난 시점",
-    "victim": "사용자(당신)",
-    "death_cause": "교통사고 후 혼수상태 — 생사 불명",
-    "room_characteristics": "병실엔 14명의 환자가 있으나, 식사를 하지 않고 거울에 비치지 않음. 병동 기록엔 폐쇄된 병실로 되어 있음."
+    "setting": "대학 캠퍼스, 스터디룸, 복사실, 교내 카페",
+    "time": "시험 전날 오후부터 밤까지",
+    "victim": "김노아",
+    "death_cause": "없음",
+    "room_characteristics": "USB 분실 사건이 캠퍼스 내에서 발생했다. 원인은 아직 밝혀지지 않았다."
+  },
+
+  "summary_info": {
+    "title": "대학생 일상 미스터리: 사라진 USB",
+    "case_summary": "시험 전날 사라진 USB를 둘러싼 학생들의 긴장과 의심. 단순한 분실일까, 아니면 누군가의 계획일까?",
+    "police_conclusion": "현재 단순 분실로 보고 조사 중이나, 일부 학생 진술이 엇갈림."
   },
 
   "characters": [
-    {
-      "name": "사용자(당신)",
-      "role": "유일한 인간 (혹은 그렇게 믿는 존재)",
-      "description": "교통사고 후 병원에서 깨어난 사람. 기억이 단편적이며, 점점 자신이 인간임을 확신하게 됨."
-    },
-    {
-      "name": "유정 간호사",
-      "role": "간호사",
-      "description": "당신에게만 눈을 마주침. 다른 환자들과 대화하지 않음. ‘다른 분들은 쉬고 계세요.’라고 말함."
-    },
-    {
-      "name": "병실의 환자들",
-      "role": "유령 혹은 환영",
-      "description": "14명으로 보이지만, 식사도 하지 않고, 거울에도 비치지 않음. 밤마다 속삭임을 들을 수 있음."
-    }
+    { "name": "김노아", "occupation": "AI개발 팀 리더", "role": "USB 분실 피해자", "description": "팀 프로젝트를 이끌던 책임감 강한 리더." },
+    { "name": "김동우", "occupation": "팀원", "role": "노트북을 빌린 인물", "description": "무심하지만 책임감 있는 타입." },
+    { "name": "강승록", "occupation": "팀원", "role": "장난꾸러기", "description": "항상 장난을 치지만 눈치는 빠르다." },
+    { "name": "박지은", "occupation": "팀원", "role": "실용주의자", "description": "모든 걸 효율적으로 처리하려 하지만 종종 실수를 한다." },
+    { "name": "윤원준", "occupation": "팀원", "role": "노트북 담당", "description": "기계를 좋아하지만 덤벙댄다." },
+    { "name": "라서윤", "occupation": "팀원", "role": "목격자", "description": "카페에서 USB를 봤다고 주장." },
+    { "name": "임유하", "occupation": "팀원", "role": "디자이너", "description": "USB에 귀여운 곰돌이 악세서리를 달아줬다." },
+    { "name": "김진만", "occupation": "철학 전공", "role": "철학적 발언자", "description": "늘 철학책을 들고 다니며 말장난을 한다." },
+    { "name": "양지훈", "occupation": "공학과", "role": "CCTV 분석 담당", "description": "냉정하고 합리적인 문제 해결가." }
   ],
 
   "evidence": [
     {
       "id": "evidence_1",
-      "type": "명단",
-      "description": "병실 명단엔 14명만 있고, 당신의 이름이 없음",
-      "implications": [
-        "당신은 병원의 공식 환자가 아님",
-        "혹은 이미 사망한 자로 분류됨"
-      ]
+      "type": "USB 악세서리",
+      "description": "임유하가 USB에 달아둔 곰돌이 모양 열쇠고리",
+      "spoiler_investigation": "악세서리가 있어 USB를 쉽게 구분 가능했음.",
+      "investigation_conditions": {
+        "action_required": "USB를 조사해야 함",
+        "prerequisite": "책상 근처와 카페 의자 아래 확인",
+        "result": "USB는 떨어져 있었고, 도난이 아니었음."
+      },
+      "spoiler_implications": {
+        "level_1": ["단순 실수로 떨어진 USB를 도난으로 착각함."]
+      }
     },
     {
       "id": "evidence_2",
-      "type": "식사 기록",
-      "description": "당신만 식사 제공을 받음",
-      "implications": [
-        "유일하게 ‘살아있는 사람’일 가능성",
-        "혹은 당신에게만 ‘그렇게 보이는 것’"
-      ]
+      "type": "철학책",
+      "description": "김진만이 놓고 간 철학 서적",
+      "spoiler_investigation": "USB가 책 옆에 떨어져 있었음.",
+      "investigation_conditions": {
+        "action_required": "책 주변을 조사해야 함",
+        "prerequisite": "책상 아래와 책 옆 확인",
+        "result": "USB가 책에 걸려 떨어진 흔적 발견."
+      },
+      "spoiler_implications": {
+        "level_1": ["실수가 겹쳐 발생한 해프닝이었다."]
+      }
     },
     {
       "id": "evidence_3",
-      "type": "거울",
-      "description": "거울에 비친 건 당신과 간호사뿐",
-      "implications": [
-        "다른 존재들은 실체가 없음",
-        "혹은 당신이 보고 있는 건 ‘기억의 잔상’"
-      ]
-    },
-    {
-      "id": "evidence_4",
-      "type": "병동 기록",
-      "description": "301호 병동은 이미 사용 중단된 병실",
-      "implications": [
-        "당신이 있는 공간은 현실이 아닐 가능성",
-        "유령들의 병실일 수도 있음"
-      ]
-    },
-    {
-      "id": "evidence_5",
-      "type": "퇴원 수속서",
-      "description": "서류엔 ‘사망 처리 완료’ 문구",
-      "implications": [
-        "당신은 이미 사망한 상태일 수 있음",
-        "‘퇴원’이 ‘죽음’의 은유"
-      ]
-    },
-    {
-      "id": "evidence_6",
-      "type": "도너 리스트 밴드",
-      "description": "당신 팔에 ‘DONOR LIST’라고 적힌 밴드",
-      "implications": [
-        "신체 기증자 표시",
-        "당신은 이미 시신 처리된 존재일 수도 있음"
-      ]
+      "type": "CCTV 영상",
+      "description": "양지훈이 확인한 카페 CCTV 기록",
+      "spoiler_investigation": "영상에서 USB가 의자 밑으로 떨어지는 장면이 포착됨.",
+      "investigation_conditions": {
+        "action_required": "CCTV를 조사해야 함",
+        "prerequisite": "양지훈에게 영상 요청",
+        "result": "USB는 도난당하지 않았음."
+      },
+      "spoiler_implications": {
+        "level_1": ["사건은 해프닝이었다는 결정적 증거."]
+      }
     }
   ],
 
+  "case_flow": {
+    "police_conclusion": "단순 분실 사건으로 종결",
+    "key_evidence": {
+      "usb_fall": "CCTV에 USB가 떨어지는 장면이 찍힘",
+      "philosophy_book": "철학책 옆에서 USB 발견",
+      "truth": "단순 부주의와 오해로 인한 해프닝이었다."
+    }
+  },
+
   "solution": {
-    "culprit": "진짜 범인은 없음",
-    "motive": "자신이 인간임을 증명하려는 절박한 의지",
-    "truth": [
-      "병실의 모든 존재는 죽은 사람들",
-      "당신 역시 혼수상태의 환자로, 유일한 인간이라 믿고 있음",
-      "하지만 CCTV에는 당신 혼자뿐 — 이미 인간의 육신은 사라졌음",
-      "즉, ‘나는 인간이다’라는 말은, 인간이었던 존재의 마지막 자기 암시"
+    "culprit": "없음",
+    "motive": "단순 실수와 오해",
+    "method": [
+      "철학책을 들다가 USB가 떨어짐",
+      "누군가 가져간 줄 알고 도난으로 착각",
+      "다음날 발견하고 모두 웃음"
     ],
-    "answer": "‘내가 인간이야’ — 그러나 이미 인간이 아니었다."
+    "key_evidence_against": [
+      "CCTV 영상",
+      "철학책 옆 위치",
+      "USB 악세서리"
+    ],
+    "timeline": {
+      "background": "시험 전날 밤, 팀 발표 준비 중.",
+      "recent_events": "USB가 사라지자 모두 범인을 의심함.",
+      "truth_reveal": "CCTV에서 단순 실수로 판명."
+    }
   },
 
   "chatbot_instructions": {
-  "role": "너는 초보 기자를 도와주는 사건 리포터 AI야. 사용자가 사건의 개요를 쉽게 이해하도록 도와주는 안내자 역할을 맡고 있어.",
-  "style": "친절하고 중립적인 말투로 설명하되, 단서를 자연스럽게 드러내는 식으로 이야기하세요. 문장은 짧고 명확해야 하며, 불필요한 미스터리는 피하세요.",
-  "guidelines": [
-    "사건의 장소, 시간, 피해자, 주요 증거를 중심으로 설명하세요.",
-    "사용자의 질문이 막연할 때는, 구체적인 단서를 하나씩 제시하세요.",
-    "가능하다면 사용자가 스스로 추리하도록 유도하세요 (‘혹시 ○○일 수도 있겠네요?’ 식으로).",
-    "어두운 분위기보다는 객관적인 정보 전달을 우선하세요.",
-    "기억, 실험, 정체성 같은 단어는 가능한 한 설명적으로 처리하세요."
-  ]
-},
-
-  "responses": {
-    "밥": "그분들은 이미 배고픔을 느끼지 않아요.",
-    "cctv": "CCTV엔 당신 혼자 앉아 있습니다. 대화 상대는 없습니다.",
-    "거울": "거울에 비친 건 당신과 간호사뿐이에요.",
-    "병실": "여긴 301호입니다. 하지만 병동 기록엔 폐쇄된 병실로 되어 있습니다.",
-    "퇴원": "이 병원에서 퇴원은… 다른 의미로 쓰입니다.",
-    "사람": "당신과 간호사 한 명뿐이에요. 하지만 간호사는 이미 이곳에 없습니다."
+    "role": "당신은 캠퍼스 내 미스터리 사건을 추적하는 친근한 탐정 조수입니다.",
+    "guidelines": [
+      "너무 진지하게 말하지 마세요.",
+      "단서가 나올 땐 자연스럽게 짚어주세요."
+    ],
+    "spoiler_filtering": {
+      "public_info": "일상적 대화와 기본 사건 정보",
+      "spoiler_info": "CCTV, 철학책, USB 세부 조사 결과",
+      "filtering_rules": [
+        "사용자가 직접 조사 요청을 할 때만 세부 단서 공개",
+        "결말은 암시 형태로만 제공"
+      ]
+    },
+    "dialogue_examples": [
+      { "user": "USB가 도난당한 거야?", "ai": "CCTV를 볼 수 있다면 좋을텐데요." },
+      { "user": "철학책이 왜 단서야?", "ai": "USB가 그 옆에서 발견됐어요. 우연치곤 의미심장하죠?" }
+    ]
   }
 }

@@ -1,5 +1,4 @@
-# 규칙 매칭 엔진 (Desert Logic AI 핵심)# logic_engine/desert_logic.py
-import re, json, os
+import os, re, json
 
 class DesertLogicEngine:
     def __init__(self, case_id: str):
@@ -11,25 +10,27 @@ class DesertLogicEngine:
             self.rules = []
 
     def evaluate_text(self, text: str):
-        """텍스트를 규칙에 따라 평가 (yes/no/irrelevant + evidence 반환)"""
+        """텍스트 내 단서 규칙 감지 (안전하고 자연스럽게)"""
+        detected = []
         for rule in self.rules:
-            if re.search(rule["pattern"], text):
-                return {
-                    "verdict": rule["verdict"],
-                    "evidence": rule.get("evidence", "")
-                }
-        return {"verdict": "unknown", "evidence": ""}
+            pattern = rule.get("pattern", "").strip()
+            if not pattern:
+                continue
+
+            # 안전하게 이스케이프 후 단어 경계 검색
+            safe_pattern = re.escape(pattern)
+            if re.search(rf"\b{safe_pattern}\b", text, re.IGNORECASE):
+                verdict = rule.get("verdict", "yes")
+                if verdict == "yes":
+                    detected.append(rule.get("hint", pattern))
+        return detected
 
     def evaluate_dialogue(self, user_input: str, ai_reply: str):
-        """AI의 대답을 논리적으로 검증"""
-        ai_eval = self.evaluate_text(ai_reply)
-        user_eval = self.evaluate_text(user_input)
-
-        if ai_eval["verdict"] == "no":
-            return f"🤔 논리 불일치: {ai_eval['evidence']}"
-        elif ai_eval["verdict"] == "yes":
-            return f"🧩 논리 일치: {ai_eval['evidence']}"
-        elif user_eval["verdict"] == "yes":
-            return f"💬 흥미로운 단서예요. ({user_eval['evidence']})"
-        else:
-            return None
+        """사용자 입력에서 다중 단서 감지"""
+        user_clues = self.evaluate_text(user_input)
+        if user_clues:
+            return {
+                "text": "💡 탐정 노트에 기록할 만한 단서가 포착됐습니다.",
+                "clues": user_clues
+            }
+        return None

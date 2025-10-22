@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import ChatPanel from '@/app/components/ChatPanel'
-import ClueBoard from '@/app/components/ClueBoard'
 import AnswerPanel from '@/app/components/AnswerPanel'
 import CasePanel from '@/app/components/CasePanel' // 새로 분리할 컴포넌트
 import { API_BASE } from '@/lib/api'
@@ -72,40 +71,42 @@ export default function ReporterPage() {
     >
       {/* 전체 컨테이너 - 중앙 정렬 + 좌우 여백 */}
       <div className="w-[60%] h-[88vh] flex border border-red-800 rounded-2xl overflow-visible shadow-[0_0_25px_rgba(255,0,0,0.3)]">
+        
         {/* 좌측 패널 */}
         <div className="relative w-1/2 border-r border-red-800 bg-black/95">
+          
           {/* 📑 책갈피 버튼 */}
           <div className="absolute -left-[110px] top-20 flex flex-col gap-3">
             {[
               { key: 'story', label: '스토리' },
               { key: 'overview', label: '사건 개요 / 등장 인물' },
               { key: 'evidence', label: '증거 / 단서' },
-            ].map(btn => (
-              <div
-                key={btn.key}
-                onClick={() => setActiveTab(btn.key as any)}
-                className={`cursor-pointer select-none text-center text-sm font-semibold
-                  w-[100px] py-2 transition-all duration-300
-                  ${activeTab === btn.key
-                    ? 'bg-red-800/40 text-red-300 border border-red-500 shadow-[0_0_10px_rgba(255,0,0,0.6)] translate-x-[8px]'
-                    : 'bg-black/70 text-red-700 border border-red-900 hover:text-red-400 hover:border-red-600 hover:translate-x-[4px]'
-                  }`}
-                style={{ clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)' }}
-              >
-                {btn.label}
-              </div>
-            ))}
+            ].map(btn => {
+              const isActive = activeTab === btn.key
+              return (
+                <div
+                  key={btn.key}
+                  onClick={() => setActiveTab(btn.key as any)}
+                  className={`relative cursor-pointer select-none text-center text-sm font-semibold
+                    w-[100px] py-2 border transition-all duration-300 overflow-hidden
+                    ${isActive
+                      ? 'bg-[#222] text-red-200 border-red-600 shadow-[inset_0_0_10px_#ff000055]'
+                      : 'bg-black/80 text-red-700 border-red-900 hover:text-red-400 hover:border-red-600 hover:translate-x-[3px]'
+                    }`}
+                  style={{ clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)' }}
+                >
+                  {/* 💥 피 효과 — hover시에만, 선택(active)이면 숨김 */}
+                  {!isActive && (
+                    <span className="absolute inset-0 blood-burst pointer-events-none -z-10"></span>
+                  )}
+                  <span className="relative z-10">{btn.label}</span>
+                </div>
+              )
+            })}
           </div>
-
 
           {/* 패널 내용 (CasePanel) */}
           <div className="relative p-8 overflow-y-auto h-full bg-black/95 border-r border-red-800">
-
-            {/* 피 튀긴 배경 오버레이 */}
-            {/* <div
-              className="absolute inset-0 bg-[url('/textures/blood1.png')] 
-                        bg-cover bg-center opacity-70 mix-blend-screen pointer-events-none"
-            /> */}
 
             <div
               className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-screen pointer-events-none brightness-125 contrast-125"

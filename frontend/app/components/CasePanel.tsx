@@ -19,12 +19,36 @@ export default function CasePanel({ article, clues, unlockedEvidence, activeTab,
           {/* 사건 개요 */}
           <div>
             <h2 className="text-xl font-bold mb-3 text-red-500">📍 사건 개요</h2>
-            <ul className="space-y-1 text-sm leading-relaxed">
-              <li>장소: {article.case_overview?.setting}</li>
-              <li>시간: {article.case_overview?.time}</li>
-              <li>피해자: {article.case_overview?.victim}</li>
-              <li>사망 원인: {article.case_overview?.death_cause}</li>
-            </ul>
+
+            {mode === '상' && (
+              <ul className="space-y-1 text-sm leading-relaxed">
+                <li>유형: 스릴러 / 심리 실험</li>
+                <li>장소: {article.case_overview?.setting}</li>
+                <li>시간: {article.case_overview?.time}</li>
+                <li>난이도: {article.difficulty || '상'}</li>
+              </ul>
+            )}
+
+            {mode === '중' && (
+              <ul className="space-y-1 text-sm leading-relaxed">
+                <li>유형: 살인사건 추리</li>
+                <li>장소: {article.case_overview?.setting}</li>
+                <li>시간: {article.case_overview?.time}</li>
+                <li>피해자: {article.case_overview?.victim}</li>
+                <li>사망 원인: {article.case_overview?.death_cause}</li>
+                <li>난이도: {article.difficulty || '중'}</li>
+              </ul>
+            )}
+
+            {mode === '하' && (
+              <ul className="space-y-1 text-sm leading-relaxed">
+                <li>장소: {article.case_overview?.setting}</li>
+                <li>시간: {article.case_overview?.time}</li>
+                <li>피해자: {article.case_overview?.victim}</li>
+                <li>난이도: {article.difficulty || '하'}</li>
+                <li>사건 유형: {article.case_overview?.death_cause || '일상 속 해프닝'}</li>
+              </ul>
+            )}
           </div>
 
           {/* 등장 인물 */}
@@ -60,34 +84,63 @@ export default function CasePanel({ article, clues, unlockedEvidence, activeTab,
         </section>
       )}
 
-      {/* 🔍 증거 목록 + 💡 감지된 단서 */}
+      {/* 증거 목록 + 감지된 단서 */}
       {activeTab === 'evidence' && (
         <section className="space-y-8">
           {/* 증거 목록 */}
-          <div>
-            <h2 className="text-xl font-bold mb-3 text-red-500">🔍 증거 목록</h2>
-            <ul className="space-y-2 text-sm">
-              {article.evidence?.map((e: any, i: number) => {
-                const isUnlocked = unlockedEvidence.includes(e.type)
-                return (
-                  <li
-                    key={i}
-                    className={`border-b border-red-800 pb-2 ${
-                      isUnlocked ? 'text-red-400' : 'text-gray-700 italic'
-                    } transition-all`}
-                  >
-                    {isUnlocked ? (
-                      <>
-                        <strong>{e.type}</strong> — {e.description}
-                      </>
-                    ) : (
-                      <>[🔒] 잠긴 단서</>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
+          <div className="bg-black/40 p-4 rounded-xl border border-gray-700">
+            <h3 className="text-lg font-bold mb-2 text-red-500">
+              🔍 증거 목록
+              <span className="ml-2 text-sm text-gray-400">
+                (총 {article?.evidence?.length || 0}개 중{" "}
+                {unlockedEvidence.length}개 발견)
+              </span>
+            </h3>
+
+            {article?.evidence?.length > 0 ? (
+              <ul className="space-y-3 text-sm">
+                {article.evidence.map((ev: any, i: number) => {
+                  const unlocked =
+                    unlockedEvidence.includes(ev.type) ||
+                    unlockedEvidence.some((c: string) =>
+                      ev.description.includes(c)
+                    )
+
+                  return (
+                    <li
+                      key={ev.id || i}
+                      className={`transition-all p-2 rounded-md ${
+                        unlocked
+                          ? "bg-emerald-900/20 border border-emerald-600 text-emerald-300"
+                          : "bg-black/20 border border-gray-700 text-gray-500 italic"
+                      }`}
+                    >
+                      {unlocked ? (
+                        <>
+                          <div className="font-semibold text-emerald-400">
+                            🔓 {ev.type}
+                          </div>
+                          <p className="text-sm text-emerald-300 mt-1 leading-relaxed">
+                            {ev.description || "설명 없음"}
+                          </p>
+                        </>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span>🔒 잠긴 단서</span>
+                        </div>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <p className="text-gray-600 italic text-sm">
+                아직 발견된 증거가 없습니다.
+              </p>
+            )}
           </div>
+
+
 
           {/* 감지된 단서 */}
           <div>
