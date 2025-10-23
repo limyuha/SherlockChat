@@ -1,4 +1,4 @@
-'use client' // 전역에서 클라이언트 훅 쓸 수 있게
+// 'use client' // 전역에서 클라이언트 훅 쓸 수 있게
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";

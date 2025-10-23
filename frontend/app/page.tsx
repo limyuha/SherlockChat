@@ -21,7 +21,7 @@ export default function Home() {
 
       <div className="flex flex-col items-center justify-center mt-[-1rem] mb-4">
         <img
-          src="/logo2.png"
+          src="/logo.png"
           alt="Sherlock Chat"
           className="w-32 h-auto opacity-90 drop-shadow-[0_0_12px_rgba(255,0,0,0.4)]"
         />
@@ -43,8 +43,8 @@ export default function Home() {
         </div>
 
         <div onClick={() => handleSelect('하')} className="mode-card">
-          <div className="mode-card-title">👻 하</div>
-          <div className="mode-card-desc">누가 귀신일까?</div>
+          <div className="mode-card-title">도난 사건</div>
+          <div className="mode-card-desc">사라진 USB의 비밀</div>
         </div>
       </div>
     </main>

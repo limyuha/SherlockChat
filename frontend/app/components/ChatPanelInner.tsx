@@ -19,8 +19,15 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clue: string) =>
   const mode = params.get('mode') || '하' 
   // 힌트 표시 상태
   const [showHints, setShowHints] = useState(true)
-  // 기본 질문 코인 수 (필요하면 mode별로 다르게 설정 가능)
-  const [coins, setCoins] = useState(50)
+  // 기본 질문 코인 수
+  const [coins, setCoins] = useState<number>(0)
+
+  // 난이도별 코인 개수
+  useEffect(() => {
+  if (mode === '상') setCoins(50)
+  else if (mode === '중') setCoins(35)
+  else setCoins(20)
+  }, [mode])
 
    // 새 메시지가 추가될 때마다 자동 스크롤
   useEffect(() => {
