@@ -102,7 +102,7 @@ def generate_gpt_response(case_data, user_input, history):
     사건 데이터와 대화 히스토리를 기반으로 GPT 응답을 생성.
     - 사건 JSON(case_data) 기반으로만 답변하도록 제한
     - 자연스러운 탐정 조수 스타일 유지
-    - 너무 긴 응답 방지 (150자 내외)
+    - 너무 긴 응답 방지 (200자 내외)
     """
 
     chatbot_instr = case_data.get("chatbot_instructions", {})
@@ -133,7 +133,7 @@ def generate_gpt_response(case_data, user_input, history):
 만약 데이터에 없는 내용이면, "그 정보는 아직 조사되지 않았습니다."라고 답해.
 
 [답변 규칙]
-- 답변은 150자 이내로 제한.
+- 답변은 200자 이내로 제한.
 - 핵심만 요약해 1~3문장으로 말해.
 - 불필요한 서술이나 장문 분석은 금지.
 - 단서나 증거는 요약된 형태로만 언급.
@@ -283,7 +283,7 @@ async def report_endpoint(mode: str = "하"):
     case_data = load_case_data(mode)
     
     # 스토리 파일 경로 설정
-    story_path = os.path.join(os.path.dirname(__file__), "cases", "story")
+    story_path = os.path.join(os.path.dirname(__file__), "cases", "story_summary")
     story_file = {
         "상": "story_high.txt",
         "중": "story_mid.txt",
