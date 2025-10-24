@@ -8,26 +8,26 @@ export default function BreakingNewsBar() {
   const searchParams = useSearchParams();
   const [headline, setHeadline] = useState("🕵️ Breaking News : 사건 리포터 AI가 단서를 추적 중...");
 
-  // ✅ 모드 감지
+  // 모드 감지
   useEffect(() => {
     const mode = searchParams.get("mode");
 
     switch (mode) {
-      case "real":
-        setHeadline("🩸 Breaking News : 실제 범죄 사건 속보");
+      case "상":
+        setHeadline("Breaking News : 산장에서 귀신출몰...");
         break;
-      case "murder":
-        setHeadline("🔪 Breaking News : 살인 사건 긴급 속보");
+      case "중":
+        setHeadline("Breaking News : 살인 사건 긴급 속보");
         break;
-      case "ghost":
-        setHeadline("👻 Breaking News : 귀신 사건 발생, 주의 요망");
+      case "하":
+        setHeadline("Breaking News : usb의 진실을 추적 중...");
         break;
       default:
-        setHeadline("🕵️ Breaking News : 사건 리포터 AI가 단서를 추적 중...");
+        setHeadline("Breaking News : 사건 리포터 AI가 단서를 추적 중...");
     }
   }, [pathname, searchParams]);
 
-  // ✅ 음성 재생 (headline이 바뀔 때마다)
+  // 음성 재생 (headline이 바뀔 때마다)
   useEffect(() => {
     if (!headline) return;
     const utterance = new SpeechSynthesisUtterance(headline);
