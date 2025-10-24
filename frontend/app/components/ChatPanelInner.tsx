@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation' // mode 읽기용
 
 // 단서를 상위(ReporterPage나 page.tsx)로 올리기 위해
 // prop으로 함수를 받아서 호출(없어도 오류 안나도록 ? 추가)
-export default function ChatPanel({ onNewClue }: { onNewClue?: (clue: string) => void }) {
+export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[]) => void }) {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState([
     { role: 'system', text: '안녕하세요, 사건 리포터 AI입니다. 사건에 대해 궁금한 점이 있나요?' }
@@ -98,10 +98,14 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clue: string) =>
       setMessages([...newMessages, { role: 'assistant', text: data.reply }])
 
       // 단서(clues) 배열을 감지, 응답에 포함되어 있으면 상위로 전달(왼쪽 패널로 전달)
-      if (data.clues && data.clues.length > 0 && onNewClue) {
-        data.clues.forEach((c: string) => onNewClue(c))
-      } else if (data.clue && onNewClue) {
-        onNewClue(data.clue)
+      if (onNewClue) {
+        if (data.clues && data.clues.length > 0) {
+          // 한 번에 전체 전달 (배열 그대로)
+          onNewClue(data.clues)
+        } else if (data.clue) {
+          // 단일 단서 처리
+          onNewClue([data.clue])
+        }
       }
 
       // 단서 감지시 ui 표시

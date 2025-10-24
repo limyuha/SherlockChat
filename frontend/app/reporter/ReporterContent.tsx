@@ -41,21 +41,28 @@ export default function ReporterPage() {
     .catch(() => setStory1("스토리를 불러올 수 없습니다."))
 }, [mode])
 
-  // ChatPanel이 새 단서를 감지하면 실행되는 함수
-  const handleNewClue = (newClue: string) => {
-    if (!clues.includes(newClue)) {
-      setClues([...clues, newClue])
+  // ChatPanel이 새 단서를 감지하면 실행되는 함수 (배열 단서 처리)
+  const handleNewClue = (newClues: string[]) => {
+    // 중복 없이 새 단서 병합
+    const updatedClues = [...new Set([...clues, ...newClues])]
+    setClues(updatedClues)
 
-      // 단서가 증거 설명에 포함되면 해당 증거 해금
-      if (article?.evidence) {
-        const matches = article.evidence.filter((e: any) =>
-          e.description.includes(newClue) || e.type.includes(newClue)
+    // 증거 데이터가 있으면 해금 처리
+    if (article?.evidence) {
+      const matchedNames = article.evidence
+        .filter((e: any) =>
+          newClues.some((clue) =>
+            e.description.includes(clue) || e.type.includes(clue)
+          )
         )
-        const matchedNames = matches.map((m: any) => m.type)
-        setUnlockedEvidence([...new Set([...unlockedEvidence, ...matchedNames])])
-      }
+        .map((m: any) => m.type)
+
+      // 이미 해금된 것과 새로 해금된 것 합치기
+      setUnlockedEvidence((prev) => [...new Set([...prev, ...matchedNames])])
     }
   }
+
+
 
   return (
     <div

@@ -6,7 +6,7 @@ export default function CasePanel({ article, clues, unlockedEvidence, activeTab,
         <section className="space-y-8">
           <div>
             <h2 className="text-xl font-bold mb-3 text-red-500">
-              {mode === '상' ? '📖 난이도 상 스토리' : mode === '중' ? '📖 중 살인사건' : '📖 산장의 목소리'}
+              {mode === '상' ? '📖 산장의 목소리' : mode === '중' ? '📖 하숙집 밀실 살인사건' : '📖 사라진 USB'}
             </h2>
             <pre className="whitespace-pre-wrap text-red-400 text-sm bg-black/30 border border-red-900 p-4 rounded-md">
               {story1 || '로딩 중...'}

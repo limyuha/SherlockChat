@@ -185,7 +185,7 @@ def generate_gpt_response(case_data, user_input, history):
 async def chat_endpoint(request: Request):
     start_time = time.time()
     print("\n[CHAT] 요청 시작 ------------------------")
-    
+
     try:
         data = await request.json()
         user_input = data.get("message", "")
@@ -199,80 +199,86 @@ async def chat_endpoint(request: Request):
         logic_engine = DesertLogicEngine(case_id)
         print(f"사건 데이터 로드 완료 ({case_id})")
 
-        # 인물 이름 즉시 감지
-        for c in case_data.get("characters", []):
-            # 이름이 입력문에 포함되면 즉시 반환
-            if c["name"] in user_input:
-                print(f"인물 감지: {c['name']}")
-                return {
-                    "reply": f"{c['name']} — {c['description']}",
-                    "clue": c["name"],  # 프론트에 전달 (감지 단서로)
-                }
+        # GPT 응답 생성
+        ai_reply = generate_gpt_response(case_data, user_input, history)
+        combined_text = f"{user_input}\n{ai_reply}"
 
-        # 증거 이름(type) 즉시 감지(자연스럽게 설명 포함)
+        # ------------------------------
+        # 감지 결과 누적용
+        # ------------------------------
+        detected_evidences = set()
+        detected_characters = set()
+        new_clues = set()
+        extra_info = []
+
+        # --- 1️⃣ 인물 감지 ---
+        for c in case_data.get("characters", []):
+            name = c["name"]
+            if name in combined_text:
+                detected_characters.add(name)
+                new_clues.add(name)
+
+                # 사용자 질문에 직접 등장한 경우만 추가 설명
+                if name in user_input:
+                    extra_info.append(f"💡 {name} — {c['description']}")
+
+        # --- 2️⃣ 증거 감지 ---
         for e in case_data.get("evidence", []):
             evidence_type = e.get("type")
             desc = e.get("description", "")
             extra = e.get("spoiler_investigation", "")
 
-            if evidence_type and evidence_type in user_input:
-                print(f"증거 감지: {evidence_type}")
+            if evidence_type and evidence_type in combined_text:
+                detected_evidences.add(evidence_type)
+                new_clues.add(evidence_type)
 
-                # description과 추가 조사 결과를 자연스럽게 합침
-                reply_parts = []
-                if desc:
-                    reply_parts.append(desc.strip().rstrip("."))
-                if extra:
-                    reply_parts.append(f"추가 조사 결과, {extra.strip().rstrip('.')}")
-                
-                # 여백 있는 출력: 각 문장마다 줄바꿈
-                formatted_text = "\n\n".join(reply_parts)
+                # 사용자 질문에 직접 등장한 경우만 상세 설명
+                if evidence_type in user_input:
+                    details = []
+                    if desc:
+                        details.append(desc.strip().rstrip("."))
+                    if extra:
+                        details.append(f"추가 조사 결과, {extra.strip().rstrip('.')}")
+                    extra_info.append(f"💡 {evidence_type}은(는) {' '.join(details)}.")
 
-                # 탐정식 톤 추가
-                reply_text = f"{evidence_type}은(는) {formatted_text}."
-
-                return {
-                    "reply": reply_text.strip(),
-                    "clue": evidence_type,
-                }
-
-        # GPT 응답 생성 (히스토리 반영)
-        t1 = time.time()
-        ai_reply = generate_gpt_response(case_data, user_input, history)
-        print(f"GPT 응답 생성 완료 ({time.time() - t1:.2f}s)")
-
-        # Desert Logic 검증(Desert Logic이 감지한 단서/논리 평가 결과)
-        t2 = time.time()
+        # --- 3️⃣ Desert Logic ---
         try:
-            logic_feedback = logic_engine.evaluate_dialogue(user_input, ai_reply)
+            logic_feedback = logic_engine.evaluate_dialogue(combined_text, ai_reply)
         except Exception as e:
             print(f"[LogicEngine 오류] {e}")
             traceback.print_exc()
-        print(f"🔍 단서 감지 완료 ({time.time() - t2:.2f}s)")
+            logic_feedback = None
 
-        # 감지된 단서 추출
-        clue_data = None
-        if logic_feedback:
-            clue_data = logic_feedback.get("clues", [])
-
+        # ------------------------------
         # 최종 응답 구성
-        if logic_feedback:
-            final_reply = f"{ai_reply}\n\n---\n{logic_feedback['text']}"
-        else:
-            final_reply = ai_reply
-            
+        # ------------------------------
+        final_reply = ai_reply
+
+        # (1) 조사 요청 시 추가 정보 표시
+        if extra_info:
+            final_reply += "\n\n" + "\n".join(extra_info)
+
+        # (2) 추가 설명이 없고 단서가 감지된 경우 → 요약 메시지 단 한 줄만 표시
+        if not extra_info and (new_clues or (logic_feedback and logic_feedback.get("clues"))):
+            final_reply += "\n\n💡 흥미로운 단서가 언급된 것 같습니다."
+
+        # (3) Desert Logic 문장은 한 번만 추가 (중복 방지)
+        if logic_feedback and logic_feedback.get("text"):
+            if "흥미로운 단서" not in logic_feedback["text"]:
+                final_reply += f"\n\n---\n{logic_feedback['text']}"
+
+        # (4) 감지된 단서 통합 (중복 제거)
+        all_clues = list(set(list(new_clues) + (logic_feedback.get("clues", []) if logic_feedback else [])))
+
         print(f"🏁 전체 처리 완료 ({time.time() - start_time:.2f}s)")
         print("-------------------------------------------\n")
-            
-        return {
-            "reply": final_reply,  # 프론트엔드로 전송되는 JSON 응답
-            "clues": clue_data  # 배열 형태로 여러 단서 전달
-            }
-        
+
+        return {"reply": final_reply, "clues": all_clues}
+
     except Exception as e:
         print(f"💥 [chat_endpoint 예외 발생]: {e}")
         traceback.print_exc()
-        return {"error": str(e)}
+        return {"error": str(e)} 
 
 
 # =============================
