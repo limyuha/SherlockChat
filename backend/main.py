@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from openai import OpenAI
 from fastapi.responses import PlainTextResponse
-from functools import lru_cache
+from logic_engine.desert_logic import DesertLogicEngine 
 
 import time, traceback
 
@@ -23,47 +23,6 @@ for r in rules:
     pattern = r.get("pattern", "")
     if not pattern.strip():
         print("⚠️ 빈 패턴 감지:", r)
-
-
-
-# Desert Logic Engine
-class DesertLogicEngine:
-    def __init__(self, case_id: str):
-        rules_path = os.path.join(os.path.dirname(__file__), "logic_engine", "rules", f"{case_id}_rules.json")
-        if os.path.exists(rules_path):
-            with open(rules_path, "r", encoding="utf-8") as f:
-                self.rules = json.load(f)
-        else:
-            self.rules = []
-
-    def evaluate_text(self, text: str):
-        """텍스트 내 여러 규칙 매칭 (yes만 감지)"""
-        detected = []
-        for rule in self.rules:
-            pattern = rule.get("pattern", "")
-            verdict = rule.get("verdict", "yes")
-            if re.search(rf".*{pattern}.*", text, re.IGNORECASE):
-                if verdict == "yes":
-                    detected.append(pattern)
-        return detected
-
-    def evaluate_dialogue(self, user_input: str, ai_reply: str):
-        """사용자 입력에서 다중 단서 감지"""
-        user_clues = self.evaluate_text(user_input)
-        if user_clues:
-            return {
-                "text": "💡 흥미로운 단서가 언급된 것 같습니다.",
-                "clues": user_clues
-            }
-        return None
-
-    # 단서 추출 메서드
-    def extract_clue_from_feedback(self, feedback_text: str):
-        """피드백 문장에서 단서명만 추출"""
-        match = re.search(r"['\"](.+?)['\"]", feedback_text)
-        if match:
-            return match.group(1)
-        return None
 
 app = FastAPI()
 # ------------------------------
@@ -210,8 +169,9 @@ async def chat_endpoint(request: Request):
         detected_characters = set()
         new_clues = set()
         extra_info = []
+        all_hints = []
 
-        # --- 1️⃣ 인물 감지 ---
+        # --- 1) 인물 감지 ---
         for c in case_data.get("characters", []):
             name = c["name"]
             if name in combined_text:
@@ -221,27 +181,37 @@ async def chat_endpoint(request: Request):
                 # 사용자 질문에 직접 등장한 경우만 추가 설명
                 if name in user_input:
                     extra_info.append(f"💡 {name} — {c['description']}")
-
-        # --- 2️⃣ 증거 감지 ---
+                    
+        # --- 2) 증거 감지 ---
         for e in case_data.get("evidence", []):
             evidence_type = e.get("type")
             desc = e.get("description", "")
             extra = e.get("spoiler_investigation", "")
 
-            if evidence_type and evidence_type in combined_text:
+            if not evidence_type:
+                continue
+
+            # 오직 사용자 입력(user_input)에 단서가 포함된 경우만 감지
+            if re.search(evidence_type, user_input, re.IGNORECASE):
+                # 이미 감지된 단서는 건너뛰기
+                if evidence_type in detected_evidences:
+                    continue
+
                 detected_evidences.add(evidence_type)
                 new_clues.add(evidence_type)
 
-                # 사용자 질문에 직접 등장한 경우만 상세 설명
-                if evidence_type in user_input:
-                    details = []
-                    if desc:
-                        details.append(desc.strip().rstrip("."))
-                    if extra:
-                        details.append(f"추가 조사 결과, {extra.strip().rstrip('.')}")
-                    extra_info.append(f"💡 {evidence_type}은(는) {' '.join(details)}.")
+                # 💭 조수의 생각용 hint 추출 (중복 방지)
+                hint_text = logic_engine.get_hint_for_evidence(evidence_type)
+                if hint_text and evidence_type not in [h.split(":")[0] for h in all_hints]:
+                    all_hints.append(f"{evidence_type}: {hint_text}")
 
-        # --- 3️⃣ Desert Logic ---
+                # 💡 기존 요약 문구 추가
+                if desc:
+                    reply_text = f"💡 {evidence_type}은(는) {desc.strip().rstrip('.')}."
+                    extra_info.append(reply_text)
+
+
+        # --- 3) Desert Logic ---
         try:
             logic_feedback = logic_engine.evaluate_dialogue(combined_text, ai_reply)
         except Exception as e:
@@ -258,22 +228,43 @@ async def chat_endpoint(request: Request):
         if extra_info:
             final_reply += "\n\n" + "\n".join(extra_info)
 
-        # (2) 추가 설명이 없고 단서가 감지된 경우 → 요약 메시지 단 한 줄만 표시
-        if not extra_info and (new_clues or (logic_feedback and logic_feedback.get("clues"))):
+        # (2) 추가 설명이 없고 새 단서가 감지된 경우에만 → 요약 메시지 한 줄 표시
+        previous_clues = [h.get("text", "") for h in history if isinstance(h, dict)]  # 이전 대화 텍스트들
+        previous_text = " ".join(previous_clues)
+
+        # 새로 발견된 단서만 필터링
+        unique_new_clues = [
+            clue for clue in (new_clues or [])
+            if clue not in previous_text
+        ]
+
+        if (
+            not extra_info
+            and unique_new_clues  # 이전에 없던 단서만 있을 때
+            and not any(keyword in user_input for keyword in ["조사", "살펴", "확인", "자세히"])
+        ):
             final_reply += "\n\n💡 흥미로운 단서가 언급된 것 같습니다."
+
 
         # (3) Desert Logic 문장은 한 번만 추가 (중복 방지)
         if logic_feedback and logic_feedback.get("text"):
-            if "흥미로운 단서" not in logic_feedback["text"]:
-                final_reply += f"\n\n---\n{logic_feedback['text']}"
+            # text가 None이 아닐 때만 추가
+            text_msg = logic_feedback.get("text")
+            if text_msg and "흥미로운 단서" not in text_msg:
+                final_reply += f"\n\n---\n{text_msg}"
 
         # (4) 감지된 단서 통합 (중복 제거)
         all_clues = list(set(list(new_clues) + (logic_feedback.get("clues", []) if logic_feedback else [])))
-
+        
         print(f"🏁 전체 처리 완료 ({time.time() - start_time:.2f}s)")
         print("-------------------------------------------\n")
-
-        return {"reply": final_reply, "clues": all_clues}
+        
+        print(f"[DEBUG] all_hints 최종: {all_hints}")
+        return {
+            "reply": final_reply,
+            "clues": list(set(list(new_clues))),
+            "hints": all_hints  # 조수의 생각 따로 내려줌
+        }
 
     except Exception as e:
         print(f"💥 [chat_endpoint 예외 발생]: {e}")

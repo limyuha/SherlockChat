@@ -95,26 +95,48 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
-      setMessages([...newMessages, { role: 'assistant', text: data.reply }])
+console.log("서버 응답 hints:", data.hints);
 
-      // 단서(clues) 배열을 감지, 응답에 포함되어 있으면 상위로 전달(왼쪽 패널로 전달)
+      // reply + hints를 한 번에 묶어서 추가
+      let updatedMessages = [...newMessages, { role: 'assistant', text: data.reply }]
+
+      // 조수의 생각 중복 방지 처리
+      if (data.hints && data.hints.length > 0) {
+        const existingHints = new Set(
+          messages
+            .filter(m => m.text.startsWith("💭 조수의 생각"))
+            .map(m => m.text)
+        )
+
+        const uniqueNewHints = data.hints
+          .map((h: string) => {
+            // "핸드폰: 힌트문" → "힌트문" 으로 변환
+            const cleanText = h.includes(":") ? h.split(":").slice(1).join(":").trim() : h.trim()
+            return cleanText
+          })
+          .filter(
+            (hintText: string) =>
+              !existingHints.has(`💭 조수의 생각\n${hintText}`)
+          )
+
+        uniqueNewHints.forEach((hintText: string) => {
+          updatedMessages.push({
+            role: "assistant",
+            text: `💭 조수의 생각\n${hintText}`, // 👈 이모티콘 변경 + 줄바꿈
+          })
+        })
+      }
+
+      // 한 번만 setMessages 호출
+      setMessages(updatedMessages)
+
       if (onNewClue) {
         if (data.clues && data.clues.length > 0) {
-          // 한 번에 전체 전달 (배열 그대로)
           onNewClue(data.clues)
         } else if (data.clue) {
-          // 단일 단서 처리
           onNewClue([data.clue])
         }
       }
-
-      // 단서 감지시 ui 표시
-      // if (data.clues?.length) {
-      //   setMessages(prev => [
-      //     ...prev,
-      //     { role: 'system', text: `💡 ${data.clues.join(', ')} 단서가 감지되었습니다.` },
-      //   ])
-      // }
 
     } catch (err) {
       console.error(err)
@@ -172,8 +194,19 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
                     : 'text-gray-400 text-xs italic'
                 }`}
             >
-              {m.text}
 
+            <div
+              className={`whitespace-pre-wrap ${
+                m.text.includes("🧠 조수의 생각")
+                  ? "text-yellow-400 italic border border-yellow-500/40 bg-black/40 px-2 py-1 rounded-md shadow-[0_0_8px_rgba(255,255,100,0.3)]"
+                  : ""
+              }`}
+              dangerouslySetInnerHTML={{
+                __html: m.text.replace(/\n/g, "<br/>"),
+              }}
+            ></div>
+
+        
               {/* 꼬리 (공통 스타일, 방향만 다름) */}
               {m.role === 'user' && (
                 <span
