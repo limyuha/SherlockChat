@@ -5,6 +5,7 @@ import ChatPanel from '@/app/components/ChatPanel'
 import AnswerPanel from '@/app/components/AnswerPanel'
 import CasePanel from '@/app/components/CasePanel' // 새로 분리할 컴포넌트
 import { API_BASE } from '@/lib/api'
+import BackButton from "@/app/components/BackButton"
 
 export default function ReporterPage() {
   const [article, setArticle] = useState<any>(null)
@@ -65,6 +66,12 @@ export default function ReporterPage() {
 
 
   return (
+    <div className="relative h-full flex flex-col">
+      {/* 🔙 뒤로가기 버튼 */}
+      <div className="absolute top-3 left-3 z-[5] pointer-events-auto">
+        <BackButton />
+      </div>
+
     <div
       className="min-h-screen bg-black text-red-500 font-mono tracking-wide flex justify-center items-center select-none"
       onMouseDown={(e) => {
@@ -82,7 +89,7 @@ export default function ReporterPage() {
         {/* 좌측 패널 */}
         <div className="relative w-1/2 border-r border-red-800 bg-black/95">
           
-          {/* 📑 책갈피 버튼 */}
+          {/* 책갈피 버튼 */}
           <div className="absolute -left-[110px] top-20 flex flex-col gap-3">
             {[
               { key: 'story', label: '스토리' },
@@ -94,23 +101,30 @@ export default function ReporterPage() {
                 <div
                   key={btn.key}
                   onClick={() => setActiveTab(btn.key as any)}
-                  className={`relative cursor-pointer select-none text-center text-sm font-semibold
-                    w-[100px] py-2 border transition-all duration-300 overflow-hidden
+                  className={`relative cursor-pointer select-none text-center font-semibold transition-all duration-300 overflow-hidden
+                    w-[110px] py-2 border rounded-r-md
                     ${isActive
-                      ? 'bg-[#222] text-red-200 border-red-600 shadow-[inset_0_0_10px_#ff000055]'
-                      : 'bg-black/80 text-red-700 border-red-900 hover:text-red-400 hover:border-red-600 hover:translate-x-[3px]'
+                      ? 'text-red-100 border-red-400 bg-gradient-to-r from-red-800/70 to-red-900/90 shadow-[inset_0_0_15px_#ff0000,0_0_10px_#ff000055] scale-105'
+                      : 'text-red-800 border-red-900 bg-black/80 hover:text-red-400 hover:border-red-600 hover:translate-x-[3px]'
                     }`}
-                  style={{ clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)' }}
+                  style={{
+                    clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)',
+                  }}
                 >
-                  {/* 💥 피 효과 — hover시에만, 선택(active)이면 숨김 */}
-                  {!isActive && (
+                  {/* 피 효과 — hover시에만, 선택(active)이면 고정 */}
+                  {isActive ? (
+                    <span className="absolute inset-0 bg-[url('/textures/blood/blood5.png')] bg-cover opacity-40 mix-blend-screen pointer-events-none" />
+                  ) : (
                     <span className="absolute inset-0 blood-burst pointer-events-none -z-10"></span>
                   )}
-                  <span className="relative z-10">{btn.label}</span>
+                  <span className={`relative z-10 text-sm ${isActive ? 'tracking-wide drop-shadow-[0_0_6px_#ff0000]' : ''}`}>
+                    {btn.label}
+                  </span>
                 </div>
               )
             })}
           </div>
+
 
           {/* 패널 내용 (CasePanel) */}
           <div className="relative p-8 overflow-y-auto h-full bg-black/95 border-r border-red-800">
@@ -153,6 +167,7 @@ export default function ReporterPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }
