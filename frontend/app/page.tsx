@@ -43,8 +43,8 @@ export default function Home() {
         </div>
 
         <div onClick={() => handleSelect('하')} className="mode-card">
-          <div className="mode-card-title">도난 사건</div>
-          <div className="mode-card-desc">사라진 USB의 비밀</div>
+          <div className="mode-card-title">살인 사건</div>
+          <div className="mode-card-desc">해변가 독극물 살인사건</div>
         </div>
       </div>
     </main>

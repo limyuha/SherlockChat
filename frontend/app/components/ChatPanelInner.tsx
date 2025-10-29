@@ -52,8 +52,8 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
       '“L씨에 관해 알려줘”',
     ],
     하: [
-      '“USB가 사라졌다고 했는데, 누가 마지막으로 봤어?”',
-      '“카페 CCTV에는 뭐가 찍혔어?”',
+      '“용의자들 조사해줘”',
+      '“리조트 매니저는 뭐라고 진술했어?”',
     ],
   }
 

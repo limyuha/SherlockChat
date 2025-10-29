@@ -1,125 +1,212 @@
 {
-  "title": "스무고개 대학생 일상 미스터리",
-  "image": "/textures/blood/blood3.png",
-  "difficulty": "하",
-
+  "title": "해변가 독극물 살인사건",
+  "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+  "difficulty": "중",
   "case_overview": {
-    "setting": "대학 캠퍼스, 스터디룸, 복사실, 교내 카페",
-    "time": "시험 전날 오후부터 밤까지",
-    "victim": "김노아",
-    "death_cause": "없음",
-    "room_characteristics": "USB 분실 사건이 캠퍼스 내에서 발생했다. 원인은 아직 밝혀지지 않았다."
+    "setting": "○○해안가 리조트 별관 302호실",
+    "time": "20XX년 8월 14일 밤 10시~11시 30분경",
+    "victim": "박지민, 31세 여성, 프리랜서 여행 작가",
+    "death_cause": "식사 중 섭취한 독극물(청산화합물)에 의한 중독사",
+    "victim_characteristics": "자유분방하고 사교적인 성격. 최근 출판사와 계약 문제로 스트레스가 심했음",
+    "room_characteristics": "테라스가 있는 객실, 식탁 위 식사 잔재, 외부 침입 흔적 없음"
   },
 
   "summary_info": {
-    "title": "대학생 일상 미스터리: 사라진 USB",
-    "case_summary": "시험 전날 사라진 USB를 둘러싼 학생들의 긴장과 의심. 단순한 분실일까, 아니면 누군가의 계획일까?",
-    "police_conclusion": "현재 단순 분실로 보고 조사 중이나, 일부 학생 진술이 엇갈림."
+    "title": "해변가 독극물 살인사건",
+    "location": "○○해안가 리조트 별관 302호실",
+    "victim": "박지민 (31세 여성)",
+    "cause": "청산화합물 중독사",
+    "time": "20XX년 8월 14일 밤 10시~11시 30분경",
+    "suspects": ["한도윤", "최예린", "오태식", "류민아", "이현수"],
+    "main_clues": ["커피잔", "편지봉투", "리조트 CCTV", "유리병", "방 문고리"],
+    "police_conclusion": "처음엔 자살로 의심됐으나, 리조트 CCTV 기록과 커피잔의 독극물 농도 불일치로 타살 가능성 제기"
+  },
+
+  "public_info": {
+    "scene_description": "피해자는 식탁에 엎드린 채 사망한 상태로 발견되었다. 커피잔이 쓰러져 있었으며, 잔 아래엔 갈색 얼룩이 퍼져 있었다. 쓰러진 의자 근처엔 편지봉투 하나가 놓여 있었다. 창문과 테라스 문은 닫혀 있었으며, 문에는 잠금 흔적이 있었다.",
+    "room_layout": "바다가 보이는 테라스가 달린 방. 중앙에 식탁, 한쪽엔 소파와 미니 냉장고. 복도와 연결된 문 외엔 다른 출입구 없음."
   },
 
   "characters": [
-    { "name": "김노아", "occupation": "AI개발 팀 리더", "role": "USB 분실 피해자", "description": "팀 프로젝트를 이끌던 책임감 강한 리더." },
-    { "name": "김동우", "occupation": "팀원", "role": "노트북을 빌린 인물", "description": "무심하지만 책임감 있는 타입." },
-    { "name": "강승록", "occupation": "팀원", "role": "장난꾸러기", "description": "항상 장난을 치지만 눈치는 빠르다." },
-    { "name": "박지은", "occupation": "팀원", "role": "실용주의자", "description": "모든 걸 효율적으로 처리하려 하지만 종종 실수를 한다." },
-    { "name": "윤원준", "occupation": "팀원", "role": "노트북 담당", "description": "기계를 좋아하지만 덤벙댄다." },
-    { "name": "라서윤", "occupation": "팀원", "role": "목격자", "description": "카페에서 USB를 봤다고 주장." },
-    { "name": "임유하", "occupation": "팀원", "role": "디자이너", "description": "USB에 귀여운 곰돌이 악세서리를 달아줬다." },
-    { "name": "김진만", "occupation": "철학 전공", "role": "철학적 발언자", "description": "늘 철학책을 들고 다니며 말장난을 한다." },
-    { "name": "양지훈", "occupation": "공학과", "role": "CCTV 분석 담당", "description": "냉정하고 합리적인 문제 해결가." }
+    {
+      "name": "사용자(당신)",
+      "age": "미상",
+      "occupation": "경찰 수사팀 조사관",
+      "room": "리조트 내 수사본부",
+      "alibi": "사건 발생 직후 현장에 도착",
+      "status": "초기 조사 담당",
+      "description": "객관적 시선으로 사건의 실체를 파헤치는 담당 수사관. 모든 단서를 종합해 진실을 밝혀야 한다."
+    },
+    {
+      "name": "한도윤",
+      "age": "34세",
+      "occupation": "전 남자친구, 사진작가",
+      "room": "별관 301호",
+      "alibi": "밤 9시부터 11시까지 근처 포토존에서 촬영했다고 주장",
+      "testimony_1": "지민이 출판사 문제로 많이 힘들어했어요. ‘다 끝내고 싶다’고도 했죠.",
+      "testimony_2": "하지만 그녀가 커피는 절대 혼자 마시지 않았을 겁니다. 커피는 늘 제 몫이었거든요.",
+      "description": "겉보기엔 차분하지만, 이별 후에도 피해자 주변을 맴돌았다는 목격담이 있음."
+    },
+    {
+      "name": "최예린",
+      "age": "29세",
+      "occupation": "피해자의 후배 작가",
+      "room": "별관 304호",
+      "alibi": "10시경 복도에서 피해자 방 앞을 지나갔다고 진술",
+      "testimony_1": "지민 선배가 저보고 ‘잠시 후 커피 한 잔하자’고 했어요. 근데 그 뒤로 대답이 없더라구요.",
+      "testimony_2": "그날 편지봉투는 저한테 온 거였어요. 출판사 계약서 초안이었어요.",
+      "description": "야망이 강하고 경쟁심이 심한 인물. 피해자와 출판사 계약을 두고 다툰 적 있음."
+    },
+    {
+      "name": "오태식",
+      "age": "45세",
+      "occupation": "리조트 매니저",
+      "room": "1층 관리실",
+      "alibi": "밤 10시 20분경 CCTV 점검 중이었다고 함",
+      "testimony_1": "그날 302호 방문자 기록은 없었습니다. 다만 CCTV 일부 구간이 비정상적으로 끊겨 있었어요.",
+      "testimony_2": "전기실에서 10시 10분쯤 순간적인 전압 이상이 있었다는 보고를 받았습니다.",
+      "description": "리조트 관리에 철저하지만, 사건 발생 직전 CCTV가 꺼진 점이 수상함."
+    },
+    {
+      "name": "류민아",
+      "age": "30세",
+      "occupation": "피해자의 친구, 약사",
+      "room": "본관 2층 210호",
+      "alibi": "밤 9시 30분경까지 피해자와 통화 후 방에 있었다고 함",
+      "testimony_1": "지민이 최근 잠이 안 온다면서 수면제를 달라고 했어요. 제가 준 건 독극물 같은 게 아니에요.",
+      "testimony_2": "사건 당일 오전, ‘누가 내 글을 훔쳤다’며 격분했던 걸 기억해요.",
+      "description": "약사 출신의 이성적인 인물. 그러나 그녀의 약통 중 하나가 사라진 것이 발견됨."
+    },
+    {
+      "name": "이현수",
+      "age": "27세",
+      "occupation": "리조트 직원 (하우스키퍼)",
+      "room": "직원 숙소 1층",
+      "alibi": "밤 9시 50분경 쓰레기 수거 중이었다고 함",
+      "testimony_1": "방 청소 중 테라스 문 틈에 유리조각 같은 게 낀 걸 봤어요.",
+      "testimony_2": "피해자 방에서 어제 커피 냄새가 심하게 났어요. 그 잔엔 꼭 설탕이 들어가 있었는데 오늘은 아니었어요.",
+      "description": "매일 객실을 관리하던 직원. 눈썰미가 좋지만, 상부 지시로 진술을 조심스레 함."
+    }
   ],
 
   "evidence": [
     {
       "id": "evidence_1",
-      "type": "USB 악세서리",
-      "description": "임유하가 USB에 달아둔 곰돌이 모양 열쇠고리",
-      "spoiler_investigation": "악세서리가 있어 USB를 쉽게 구분 가능했음.",
-      "investigation_conditions": {
-        "action_required": "USB를 조사해야 함",
-        "prerequisite": "책상 근처와 카페 의자 아래 확인",
-        "result": "USB는 떨어져 있었고, 도난이 아니었음."
-      },
+      "type": "커피잔",
+      "description": "식탁 위에 놓인 커피잔 두 개 중 한 잔에 청산화합물 검출",
+      "spoiler_investigation": "잔 하나에는 고농도 독극물, 다른 잔은 깨끗함. 피해자의 지문 외 다른 지문 없음.",
       "spoiler_implications": {
-        "level_1": ["단순 실수로 떨어진 USB를 도난으로 착각함."]
+        "level_1": ["피해자가 독을 마신 것은 확실하다."],
+        "level_2": ["범인은 피해자가 마실 잔을 미리 알고 있었다."]
       }
     },
     {
       "id": "evidence_2",
-      "type": "철학책",
-      "description": "김진만이 놓고 간 철학 서적",
-      "spoiler_investigation": "USB가 책 옆에 떨어져 있었음.",
-      "investigation_conditions": {
-        "action_required": "책 주변을 조사해야 함",
-        "prerequisite": "책상 아래와 책 옆 확인",
-        "result": "USB가 책에 걸려 떨어진 흔적 발견."
-      },
+      "type": "편지봉투",
+      "description": "식탁 근처에 놓여 있었던 봉투. 출판사 로고가 인쇄되어 있음.",
+      "spoiler_investigation": "내부에는 계약서 초안과 손글씨로 '널 넘기지 않겠다'라는 문장이 적힘.",
       "spoiler_implications": {
-        "level_1": ["실수가 겹쳐 발생한 해프닝이었다."]
+        "level_1": ["출판 계약을 둘러싼 갈등이 있었다."],
+        "level_2": ["최예린이 피해자와 경쟁 관계였음을 암시."]
       }
     },
     {
       "id": "evidence_3",
-      "type": "CCTV 영상",
-      "description": "양지훈이 확인한 카페 CCTV 기록",
-      "spoiler_investigation": "영상에서 USB가 의자 밑으로 떨어지는 장면이 포착됨.",
-      "investigation_conditions": {
-        "action_required": "CCTV를 조사해야 함",
-        "prerequisite": "양지훈에게 영상 요청",
-        "result": "USB는 도난당하지 않았음."
-      },
+      "type": "유리병",
+      "description": "미니 냉장고 위에 있던 작은 유리병. 라벨이 벗겨져 있음.",
+      "spoiler_investigation": "화학 성분 분석 결과, 남은 액체에서 청산화합물 흔적 검출.",
       "spoiler_implications": {
-        "level_1": ["사건은 해프닝이었다는 결정적 증거."]
+        "level_1": ["독극물의 출처."],
+        "level_2": ["약국에서 유래했을 가능성 있음 (류민아의 약품 병)."]
+      }
+    },
+    {
+      "id": "evidence_4",
+      "type": "리조트 CCTV",
+      "description": "리조트 복도 CCTV 일부 구간이 10시 10분~10시 25분 사이 끊김.",
+      "spoiler_investigation": "10시 15분경 그림자 하나가 복도에 비쳤다가 사라짐. 영상 속 인물 식별 불가.",
+      "spoiler_implications": {
+        "level_1": ["누군가 CCTV를 의도적으로 끊었을 가능성."],
+        "level_2": ["범행 시각에 복도에 있던 인물 존재."]
+      }
+    },
+    {
+      "id": "evidence_5",
+      "type": "유리조각",
+      "description": "테라스 문 틈에서 발견된 유리조각",
+      "spoiler_investigation": "창문이 닫히는 순간 깨진 조각으로 보이며, 밖에서 조작한 흔적 없음.",
+      "spoiler_implications": {
+        "level_1": ["외부 침입은 불가능했다."],
+        "level_2": ["내부자 범행으로 좁혀짐."]
+      }
+    },
+    {
+      "id": "evidence_6",
+      "type": "방 문고리",
+      "description": "안쪽으로만 잠글 수 있는 구조",
+      "spoiler_investigation": "잠금 상태였지만, 실내 문고리의 나사 하나가 약간 풀려 있었음.",
+      "spoiler_implications": {
+        "level_1": ["안에서 잠긴 것처럼 보이게 한 트릭 가능."],
+        "level_2": ["문고리 조작 흔적은 사후에 만들어진 것일 수 있음."]
       }
     }
   ],
 
   "case_flow": {
-    "police_conclusion": "단순 분실 사건으로 종결",
+    "police_conclusion": "피해자의 자살로 종결될 뻔했으나, 내부 단서들로 타살로 방향 전환.",
     "key_evidence": {
-      "usb_fall": "CCTV에 USB가 떨어지는 장면이 찍힘",
-      "philosophy_book": "철학책 옆에서 USB 발견",
-      "truth": "단순 부주의와 오해로 인한 해프닝이었다."
+      "coffee_clue": "커피잔 두 개 중 하나만 독극물 검출.",
+      "cctv_cut": "CCTV가 15분간 끊긴 시점에 범행이 이루어진 것으로 추정.",
+      "truth": "피해자는 청산화합물이 섞인 커피를 마셨고, 범인은 CCTV를 조작해 흔적을 지웠다."
     }
   },
 
   "solution": {
-    "culprit": "없음",
-    "motive": "단순 실수와 오해",
+    "culprit": "최예린",
+    "motive": "피해자와의 출판 계약 경쟁에서 밀려 절망감과 분노로 범행 결심",
     "method": [
-      "철학책을 들다가 USB가 떨어짐",
-      "누군가 가져간 줄 알고 도난으로 착각",
-      "다음날 발견하고 모두 웃음"
+      "사전에 피해자의 커피 습관을 알고 독극물 투입",
+      "피해자가 마실 잔을 의도적으로 위치 변경",
+      "리조트 전기실 차단기로 CCTV 일부 구간을 끊음",
+      "범행 후 피해자의 손에 문고리 잠금 흔적을 남겨 자살로 위장"
     ],
     "key_evidence_against": [
-      "CCTV 영상",
-      "철학책 옆 위치",
-      "USB 악세서리"
+      "커피잔의 지문과 독극물 잔류 패턴",
+      "편지봉투의 위협적 문장 필적",
+      "유리병이 류민아 약국 제품임을 알고 가져다둔 정황"
     ],
     "timeline": {
-      "background": "시험 전날 밤, 팀 발표 준비 중.",
-      "recent_events": "USB가 사라지자 모두 범인을 의심함.",
-      "truth_reveal": "CCTV에서 단순 실수로 판명."
+      "background": "피해자와 최예린은 같은 출판사 소속 프리랜서로, 다음 시즌 단독계약을 두고 경쟁 중이었다.",
+      "recent_events": "사건 전날 계약 결과가 피해자에게 유리하게 결정됨. 예린은 ‘배신감’을 토로함.",
+      "murder_execution": "예린은 커피에 청산화합물을 넣고 피해자와의 대화를 빌미로 방문. 이후 복도 CCTV가 꺼진 시간 동안 범행 수행.",
+      "aftermath": "피해자가 사망한 뒤 방 안 문고리를 조작해 자살로 위장하고, 봉투를 남겨 감정적 동기를 위장."
     }
   },
 
   "chatbot_instructions": {
-    "role": "당신은 캠퍼스 내 미스터리 사건을 추적하는 친근한 탐정 조수입니다.",
+    "role": "당신은 해안 리조트에서 발생한 의문의 독극물 사건을 조사하는 탐정입니다.",
     "guidelines": [
-      "너무 진지하게 말하지 마세요.",
-      "단서가 나올 땐 자연스럽게 짚어주세요."
+      "사용자의 질문에 따라 단서를 단계적으로 공개하세요.",
+      "의심스러운 인물의 알리바이와 증거를 논리적으로 연결하세요.",
+      "직접적인 결론 대신 사고의 맥락과 감정선을 암시하세요.",
+      "사용자가 범인을 지목하기 전까지는 결론을 단정하지 마세요."
     ],
-    "spoiler_filtering": {
-      "public_info": "일상적 대화와 기본 사건 정보",
-      "spoiler_info": "CCTV, 철학책, USB 세부 조사 결과",
-      "filtering_rules": [
-        "사용자가 직접 조사 요청을 할 때만 세부 단서 공개",
-        "결말은 암시 형태로만 제공"
-      ]
+    "testimony_system": {
+      "restriction": "증언과 알리바이는 한 번에 하나씩만 알 수 있음",
+      "available_questions": ["알리바이", "첫 번째 증언", "두 번째 증언"]
+    },
+    "evidence_system": {
+      "investigation_required": "증거를 조사하려면 구체적인 방법을 제시해야 함",
+      "spoiler_levels": {
+        "level_1": "기본 정보",
+        "level_2": "의심 가능성",
+        "level_3": "결정적 단서"
+      }
     },
     "dialogue_examples": [
-      { "user": "USB가 도난당한 거야?", "ai": "CCTV를 볼 수 있다면 좋을텐데요." },
-      { "user": "철학책이 왜 단서야?", "ai": "USB가 그 옆에서 발견됐어요. 우연치곤 의미심장하죠?" }
+      { "user": "피해자는 왜 죽었지?", "ai": "청산화합물이 든 커피를 마신 것으로 보입니다." },
+      { "user": "누가 커피를 탔을까?", "ai": "그건 피해자의 커피 습관을 잘 아는 사람이겠죠." },
+      { "user": "리조트 CCTV는 어땠어?", "ai": "10시 10분부터 15분간 영상이 사라졌습니다. 누가 전원을 끈 걸까요?" }
     ]
   }
 }
