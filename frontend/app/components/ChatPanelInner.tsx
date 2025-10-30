@@ -24,12 +24,12 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
 
   // 난이도별 코인 개수
   useEffect(() => {
-  if (mode === '상') setCoins(50)
-  else if (mode === '중') setCoins(35)
-  else setCoins(20)
+    if (mode === '상') setCoins(50)
+    else if (mode === '중') setCoins(35)
+    else setCoins(20)
   }, [mode])
 
-   // 새 메시지가 추가될 때마다 자동 스크롤
+  // 새 메시지가 추가될 때마다 자동 스크롤
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -52,8 +52,8 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
       '“L씨에 관해 알려줘”',
     ],
     하: [
-      '“용의자들 조사해줘”',
-      '“리조트 매니저는 뭐라고 진술했어?”',
+      '“USB가 사라졌다고 했는데, 누가 마지막으로 봤어?”',
+      '“카페 CCTV에는 뭐가 찍혔어?”',
     ],
   }
 
@@ -95,7 +95,7 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
-console.log("서버 응답 hints:", data.hints);
+      console.log("서버 응답 hints:", data.hints);
 
       // reply + hints를 한 번에 묶어서 추가
       let updatedMessages = [...newMessages, { role: 'assistant', text: data.reply }]
@@ -150,29 +150,30 @@ console.log("서버 응답 hints:", data.hints);
   }
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex flex-col h-full relative text-xs sm:text-sm md:text-base">
       {/* 초기 질문 힌트 */}
-        {showHints && (
-          <div className="absolute bottom-[85px] left-1/2 -translate-x-1/2 text-center pointer-events-none animate-fade-in z-10">
-            <div className="flex flex-col gap-1 text-red-400 font-light text-sm opacity-80">
-              {hintQuestions.map((q, i) => (
-                <p
-                  key={i}
-                  className="italic tracking-wide drop-shadow-[0_0_6px_rgba(255,0,0,0.5)]"
-                >
-                  {q}
-                </p>
-              ))}
-            </div>
+      {showHints && (
+        <div className="absolute bottom-[85px] left-1/2 -translate-x-1/2 text-center pointer-events-none animate-fade-in z-10 px-2">
+          <div className="flex flex-col gap-1 text-red-400 font-light opacity-80 text-[11px] sm:text-sm md:text-base">
+            {hintQuestions.map((q, i) => (
+              <p
+                key={i}
+                className="italic tracking-wide drop-shadow-[0_0_6px_rgba(255,0,0,0.5)]"
+              >
+                {q}
+              </p>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
       {/* 메시지 출력 영역 */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-3 px-2 pt-2 pb-1 scroll-smooth">
+        className="flex-1 overflow-y-auto space-y-3 px-2 pt-2 pb-1 scroll-smooth max-h-[55vh] sm:max-h-[60vh] md:max-h-none"
+      >
         {/* 실제 메시지 목록 */}
-         {messages.map((m, i) => (
+        {messages.map((m, i) => (
           <div
             key={i}
             className={`flex ${
@@ -184,7 +185,7 @@ console.log("서버 응답 hints:", data.hints);
             }`}
           >
             <div
-              className={`relative max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap
+              className={`relative max-w-[85%] md:max-w-[75%] px-3 sm:px-4 py-2 sm:py-3 rounded-2xl leading-relaxed whitespace-pre-wrap
                 shadow-[0_0_12px_rgba(255,0,0,0.25)]
                 ${
                   m.role === 'user'
@@ -194,19 +195,17 @@ console.log("서버 응답 hints:", data.hints);
                     : 'text-gray-400 text-xs italic'
                 }`}
             >
+              <div
+                className={`whitespace-pre-wrap ${
+                  m.text.includes("🧠 조수의 생각")
+                    ? "text-yellow-400 italic border border-yellow-500/40 bg-black/40 px-2 py-1 rounded-md shadow-[0_0_8px_rgba(255,255,100,0.3)]"
+                    : ""
+                }`}
+                dangerouslySetInnerHTML={{
+                  __html: m.text.replace(/\n/g, "<br/>"),
+                }}
+              ></div>
 
-            <div
-              className={`whitespace-pre-wrap ${
-                m.text.includes("🧠 조수의 생각")
-                  ? "text-yellow-400 italic border border-yellow-500/40 bg-black/40 px-2 py-1 rounded-md shadow-[0_0_8px_rgba(255,255,100,0.3)]"
-                  : ""
-              }`}
-              dangerouslySetInnerHTML={{
-                __html: m.text.replace(/\n/g, "<br/>"),
-              }}
-            ></div>
-
-        
               {/* 꼬리 (공통 스타일, 방향만 다름) */}
               {m.role === 'user' && (
                 <span
@@ -233,15 +232,15 @@ console.log("서버 응답 hints:", data.hints);
         )}
       </div>
 
-    {/* 코인 표시 */}
-      <div className="flex justify-end items-center text-sm font-semibold text-red-400 tracking-wide mt-[6px] mb-[4px] pr-1">
+      {/* 코인 표시 */}
+      <div className="flex justify-end items-center text-[11px] sm:text-sm md:text-base font-semibold text-red-400 tracking-wide mt-[6px] mb-[4px] pr-1">
         <span>질문 코인:</span>
         <span className="ml-1 text-red-300 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]">{coins}</span>
         <span className="ml-1">💰</span>
       </div>
 
       {/* 입력창 */}
-      <div className="flex gap-2 border-t border-red-800 pt-[6px] pb-[3px] mt-[2px] items-center justify-center">
+      <div className="flex gap-2 border-t border-red-800 pt-[6px] pb-[3px] mt-[2px] items-center justify-center px-2 sm:px-0">
         <input
           data-allow-input="true"  // ReporterPage에서 이 속성 가진 요소는 입력 허용
           value={input}
@@ -249,7 +248,7 @@ console.log("서버 응답 hints:", data.hints);
           onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           placeholder={coins > 0 ? '질문을 입력하세요...' : '질문 코인이 없습니다.'}
           disabled={coins <= 0}
-          className={`w-[80%] border border-red-800/60 bg-black/40 rounded-md px-3 py-[6px] text-sm text-red-100 focus:outline-none ${
+          className={`w-[75%] sm:w-[80%] border border-red-800/60 bg-black/40 rounded-md px-2 sm:px-3 py-[6px] text-xs sm:text-sm md:text-base text-red-100 focus:outline-none ${
             coins <= 0
               ? 'bg-gray-900 text-gray-500 cursor-not-allowed'
               : 'focus:ring-1 focus:ring-red-500 shadow-[0_0_4px_#ff0000]'
@@ -258,7 +257,7 @@ console.log("서버 응답 hints:", data.hints);
         <button
           onClick={sendMessage}
           disabled={coins <= 0}  // 코인 0이면 버튼 비활성화
-          className={`px-4 py-[6px] rounded-md text-sm font-semibold text-white transition-all shadow-[0_0_6px_rgba(255,0,0,0.4)] ${
+          className={`px-3 sm:px-4 py-[6px] rounded-md text-xs sm:text-sm md:text-base font-semibold text-white transition-all shadow-[0_0_6px_rgba(255,0,0,0.4)] ${
             loading || coins <= 0
               ? 'bg-gray-600 cursor-not-allowed opacity-60'
               : 'bg-red-700 hover:bg-red-800 hover:shadow-[0_0_10px_#ff0000]'

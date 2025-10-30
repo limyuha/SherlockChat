@@ -85,8 +85,8 @@ a:hover {
     0 0 30px #ff0000;
 }
 
-/* 버튼 */
-button {
+/* 일반 버튼만 붉은 테두리 */
+button:not([data-type="bookmark"]) {
   background-color: transparent;
   color: #ff2b2b;
   border: 1px solid #ff2b2b;
@@ -102,14 +102,15 @@ button {
     inset 0 0 10px rgba(255, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
-button:hover {
-  background-color: #ff2b2b;
-  color: #fff;
-  text-shadow: none;
-  box-shadow:
-    0 0 25px #ff0000,
-    inset 0 0 15px #ff4444;
-  transform: scale(1.05);
+
+/* 책갈피 전용 버튼은 완전히 클린 */
+button[data-type="bookmark"],
+button[data-type="bookmark"]:hover {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  outline: none !important;
 }
 
 /* 입력창 (질문 입력칸) */
@@ -403,7 +404,19 @@ div:hover > .blood-burst {
   filter: blur(0.5px);
 }
 
-
-
-
+/* === 브라우저 기본 버튼 outline 완전 차단 === */
+button[data-type="bookmark"],
+button[data-type="bookmark"]:hover,
+button[data-type="bookmark"]:focus,
+button[data-type="bookmark"]:focus-visible,
+button[data-type="bookmark"]:focus-within {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important; /* 모바일 잔상 제거 */
+  -webkit-focus-ring-color: transparent !important;    /* 크롬 기본 outline 차단 */
+  appearance: none !important;
+  background-clip: border-box !important;
+  background-origin: border-box !important;
+}
 
