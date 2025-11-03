@@ -1,41 +1,28 @@
-"use client"; // 클라이언트 컴포넌트로 지정
-
-import { usePathname, useSearchParams } from "next/navigation";
+"use client";
+import { useSearchParams } from "next/navigation";
+import { useCases } from "@/app/context/CaseContext";
 import { useEffect, useState } from "react";
 
-export default function BreakingNewsBar() {
-  const pathname = usePathname();
+export default function BreakingNewsInner() {
   const searchParams = useSearchParams();
-  const [headline, setHeadline] = useState("🕵️ Breaking News : 사건 리포터 AI가 단서를 추적 중...");
+  const { cases } = useCases();
+  const [headline, setHeadline] = useState("🕵️ 사건 리포터 AI가 단서를 추적 중...");
 
-  // 모드 감지
   useEffect(() => {
-    const mode = searchParams.get("mode");
+    const mode = searchParams.get("mode") as "상" | "중" | "하";
+    const headlineText = cases[mode]?.headline;
+    if (headlineText) setHeadline(headlineText);
+  }, [cases, searchParams]);
 
-    switch (mode) {
-      case "상":
-        setHeadline("Breaking News : 산장에서 귀신출몰...");
-        break;
-      case "중":
-        setHeadline("Breaking News : 살인 사건 긴급 속보");
-        break;
-      case "하":
-        setHeadline("Breaking News : usb의 진실을 추적 중...");
-        break;
-      default:
-        setHeadline("Breaking News : 사건 리포터 AI가 단서를 추적 중...");
-    }
-  }, [pathname, searchParams]);
-
-  // 음성 재생 (headline이 바뀔 때마다)
+  // 뉴스 톤 음성 (선택사항: 원하면 삭제 가능)
   useEffect(() => {
     if (!headline) return;
     const utterance = new SpeechSynthesisUtterance(headline);
-    utterance.lang = "ko-KR"; // 한국어 뉴스 스타일
-    utterance.pitch = 0.9; // 약간 낮은 톤
-    utterance.rate = 1; // 속도
-    utterance.volume = 1; // 볼륨
-    speechSynthesis.cancel(); // 이전 음성 중복 방지
+    utterance.lang = "ko-KR";
+    utterance.pitch = 0.9;
+    utterance.rate = 1;
+    utterance.volume = 1;
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }, [headline]);
 

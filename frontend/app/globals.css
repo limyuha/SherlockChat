@@ -277,14 +277,12 @@ h1, h2 {
   height: 220px;
   background: rgba(20, 0, 0, 0.6);
   border: 2px solid rgba(255, 50, 50, 0.6);
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow:
-    0 0 15px rgba(255, 0, 0, 0.25),
-    inset 0 0 25px rgba(255, 0, 0, 0.25);
+    0 0 20px rgba(255, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 0, 0, 0.25);
   backdrop-filter: blur(6px);
   color: #ff4b4b;
-  font-weight: bold;
-  font-size: 1.1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -294,49 +292,72 @@ h1, h2 {
   text-shadow:
     0 0 6px #ff0000,
     0 0 12px #ff3333;
+  padding: 24px 16px;
   overflow: hidden;
 }
 
-/* hover 시 붉은 오라 확산 */
+/* 카드 hover 시 붉은 네온 강조 */
 .mode-card:hover {
-  transform: scale(1.1) translateY(-8px);
+  transform: scale(1.07) translateY(-5px);
   border-color: #ff0000;
   box-shadow:
-    0 0 50px #ff0000,
-    inset 0 0 40px rgba(255, 0, 0, 0.6);
+    0 0 40px #ff0000,
+    inset 0 0 35px rgba(255, 0, 0, 0.5);
   color: #fff;
   text-shadow:
-    0 0 15px #ff2222,
-    0 0 35px #ff5555;
+    0 0 12px #ff3333,
+    0 0 25px #ff5555;
 }
 
-/* 카드 내부 붉은 에너지 오라 */
-.mode-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 50% 120%, rgba(255, 0, 0, 0.4), transparent 70%);
-  opacity: 0.3;
-  transition: opacity 0.3s ease;
+/* 카드 내부 오라 (숨쉬는 네온 효과) */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(255, 0, 0, 0.3),
+      inset 0 0 20px rgba(255, 0, 0, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(255, 0, 0, 0.6),
+      inset 0 0 30px rgba(255, 0, 0, 0.5);
+  }
 }
-.mode-card:hover::before {
-  opacity: 0.8;
+.mode-card {
+  animation: pulseGlow 4s infinite ease-in-out;
 }
 
-/* 카드 내 제목 */
+/* 제목 (이모지 + 난이도) */
 .mode-card-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
   text-transform: uppercase;
+  color: #ff4b4b;
+  text-shadow:
+    0 0 10px #ff0000,
+    0 0 20px #ff3333,
+    0 0 35px #ff6666;
 }
 
-/* 카드 내 설명 */
+/* 설명 */
 .mode-card-desc {
-  font-size: 1.1rem;
-  color: #ffb3b3;
-  opacity: 0.8;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffbfbf;
+  text-align: center;
+  line-height: 1.4;
+  opacity: 0.9;
+  padding: 0 12px;
+  text-shadow:
+    0 0 3px #ff0000,
+    0 0 8px #ff4444;
+}
+
+/* hover 시 글씨 조금 밝게 */
+.mode-card:hover .mode-card-desc {
+  color: #fff;
+  opacity: 1;
 }
 
 /* 카드 빛이 살짝 숨쉬는 애니메이션 */
