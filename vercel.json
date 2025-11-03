@@ -3,7 +3,6 @@
     { "src": "frontend/package.json", "use": "@vercel/next" }
   ],
   "framework": "nextjs",
-  "outputDirectory": "frontend/.next",
   "rewrites": [
     { "source": "/(.*)", "destination": "/frontend/$1" }
   ]
