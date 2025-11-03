@@ -186,7 +186,7 @@ export default function ReporterPage() {
           <div className="w-full md:w-1/2 flex flex-col bg-black/90 border-t md:border-t-0 md:border-l border-red-800">
             {/* 💬 채팅창 */}
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 border-b border-red-800">
-              <ChatPanel onNewClue={handleNewClue} /> {/*  단서 전달 연결 */}
+              <ChatPanel article={article} onNewClue={handleNewClue} /> {/* article, 단서 전달 연결 */}
             </div>
 
             {/* 🩸 엔딩 섹션 → 추리 패널로 변경 */}

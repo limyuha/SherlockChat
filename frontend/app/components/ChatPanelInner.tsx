@@ -5,7 +5,16 @@ import { useSearchParams } from 'next/navigation' // mode 읽기용
 
 // 단서를 상위(ReporterPage나 page.tsx)로 올리기 위해
 // prop으로 함수를 받아서 호출(없어도 오류 안나도록 ? 추가)
-export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[]) => void }) {
+// 단서를 상위(ReporterPage나 page.tsx)로 올리기 위해
+// prop으로 함수를 받아서 호출(없어도 오류 안나도록 ? 추가)
+export default function ChatPanel({
+  article,
+  onNewClue,
+}: {
+  article?: any
+  onNewClue?: (clues: string[]) => void
+}) {
+
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState([
     { role: 'system', text: '안녕하세요, 사건 리포터 AI입니다. 사건에 대해 궁금한 점이 있나요?' }
@@ -39,26 +48,19 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
     }
   }, [messages])
 
-  // 모드별 예시 질문 (최초 3개)
-  const modeHints: Record<string, string[]> = {
-    상: [
-      '“녹음 장치엔 뭐가 녹음돼 있었지?”',
-      '“시계가 왜 계속 11시를 가리키고 있어?”',
-      '“D-01 문서에 뭐라고 적혀 있었어?”',
-    ],
-    중: [
-      '“피해자의 방에 뭐가 있었어?”',
-      '“CCTV에는 누가 찍혔어?”',
-      '“L씨에 관해 알려줘”',
-    ],
-    하: [
-      '“USB가 사라졌다고 했는데, 누가 마지막으로 봤어?”',
-      '“카페 CCTV에는 뭐가 찍혔어?”',
-    ],
-  }
+  // JSON에 정의된 예시 질문 불러오기
+  // 예시 질문을 상태로 관리 (한 번 쓰면 제거 가능)
+  const [dialogueExamples, setDialogueExamples] = useState<string[]>([])
 
-  // 현재 모드에 해당하는 힌트
-  const hintQuestions = modeHints[mode] || modeHints['하']
+  useEffect(() => {
+    if (article?.chatbot_instructions?.dialogue_examples) {
+      const examples = article.chatbot_instructions.dialogue_examples.map(
+        (ex: any) => `“${ex.user}”`
+      )
+      setDialogueExamples(examples)
+    }
+  }, [article])
+
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return
@@ -151,21 +153,6 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
 
   return (
     <div className="flex flex-col h-full relative text-xs sm:text-sm md:text-base">
-      {/* 초기 질문 힌트 */}
-      {showHints && (
-        <div className="absolute bottom-[85px] left-1/2 -translate-x-1/2 text-center pointer-events-none animate-fade-in z-10 px-2">
-          <div className="flex flex-col gap-1 text-red-400 font-light opacity-80 text-[11px] sm:text-sm md:text-base">
-            {hintQuestions.map((q, i) => (
-              <p
-                key={i}
-                className="italic tracking-wide drop-shadow-[0_0_6px_rgba(255,0,0,0.5)]"
-              >
-                {q}
-              </p>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* 메시지 출력 영역 */}
       <div
@@ -238,6 +225,25 @@ export default function ChatPanel({ onNewClue }: { onNewClue?: (clues: string[])
         <span className="ml-1 text-red-300 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]">{coins}</span>
         <span className="ml-1">💰</span>
       </div>
+
+      {/* 예시 질문 표시 */}
+      {dialogueExamples.length > 0 && (
+        <div className="text-xs text-gray-400 space-y-1 mt-3">
+          <p className="text-red-500 font-semibold mb-1">💬 예시 질문</p>
+          {dialogueExamples.slice(0, 3).map((hint: string, i: number) => (
+            <p
+              key={i}
+              className="cursor-pointer hover:text-red-400"
+              onClick={() => {
+                setInput(hint.replace(/“|”/g, ''))
+                setDialogueExamples((prev) => prev.filter((h) => h !== hint))
+              }}
+            >
+              🧩 {hint}
+            </p>
+          ))}
+        </div>
+      )}
 
       {/* 입력창 */}
       <div className="flex gap-2 border-t border-red-800 pt-[6px] pb-[3px] mt-[2px] items-center justify-center px-2 sm:px-0">
